@@ -30,6 +30,9 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3"
   },
+  "sideEffects": [
+    "./src/styles/globals.css"
+  ],
   "exports": {
     "./globals.css": "./src/styles/globals.css",
     "./postcss.config": "./postcss.config.mjs",
@@ -38,3 +41,4 @@
     "./hooks/*": "./src/hooks/*.ts"
   }
 }
+
