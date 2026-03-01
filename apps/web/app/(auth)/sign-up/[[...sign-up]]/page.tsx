@@ -1,10 +1,8 @@
-import { SignUp } from "@clerk/nextjs"; 
+import { SignUpview } from "@/modules/auth/ui/views/sign-up-view";
 
 const page = () => {
   return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <SignUp />
-    </div>
+    <SignUpview/>
   );
 }
 
