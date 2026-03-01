@@ -1,6 +1,6 @@
 import { OrganizationList } from "@clerk/nextjs"
 
-export const OrgSelecionView = () => {
+export const OrgSelectionView = () => {
     return (
         <OrganizationList
             afterCreateOrganizationUrl="/"
