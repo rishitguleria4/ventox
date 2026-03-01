@@ -2,7 +2,7 @@
 import { useMutation } from "convex/react";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { Button } from "@workspace/ui/components/button";
-import { OrganizationSwitcher, SignInButton, UserButton } from "@clerk/nextjs";
+import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 export default function Page() {
   const addUser = useMutation (api.users.add);
   return (
