@@ -21,7 +21,6 @@ export const add = mutation ({
         {
             throw new Error ("MISSING ORGANIZATION DEAR!CREATE THE ONE FOR ACCESS")
         }
-
         const userId = await ctx.db.insert("users" , {
             name : "Rishit Guleria" ,
         });
