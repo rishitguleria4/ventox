@@ -34,3 +34,6 @@ npm-debug.log*
 # Misc
 .DS_Store
 *.pem
+#sentry
+apps/web/.env.sentry-build-plugin.env*
+.env*
