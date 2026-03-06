@@ -8,11 +8,9 @@ type Props = {
   children: ReactNode
 }
 
-export const DashboardLayout = async ({ children }: Props): JSX.Element => {
+export const DashboardLayout = async ({ children }: Props) => {
     const cookieStore = await cookies();
     const defaultOpen = cookieStore.get("sidebar_state") ?.value === "true";
-
-
     return (
         <AuthGuard>
         <OrganizationGuard>
