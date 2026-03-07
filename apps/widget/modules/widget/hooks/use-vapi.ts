@@ -1,5 +1,5 @@
 import Vapi from "@vapi-ai/web";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface TranscriptMessage
 {
@@ -15,7 +15,7 @@ export const useVapi = () => {
     const [transcript , setTranscript] = useState<TranscriptMessage[]>([]);
 
     useEffect(() => {
-        //only for testing vapi otheerwise vapi will be provided by user
+        //only for testing vapi otherwise vapi will be provided by user
         const vapiInstance= new Vapi("");
         setVapi(vapiInstance);
         vapiInstance.on("call-start" , () =>

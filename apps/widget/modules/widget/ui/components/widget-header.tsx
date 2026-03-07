@@ -1,3 +1,4 @@
+import type React from "react";
 import { cn } from "@workspace/ui/lib/utils";
 
 export const WidgetHeader = ({
