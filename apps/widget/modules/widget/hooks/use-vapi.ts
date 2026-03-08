@@ -60,11 +60,15 @@ export const useVapi = () => {
     },
     [vapi]);
 
-    const startCall = () => 
+    const startCall = async () => 
     {
         setIsConnecting(true);
-        //only for testing vapi otheerwise vapi will be provided by user
-        vapi.start("");
+        try {
+            await vapi.start("");
+        } catch (error) {
+            console.error("Failed to start call:", error);
+            setIsConnecting(false);
+        }
     }
 
     const endCall = () =>
