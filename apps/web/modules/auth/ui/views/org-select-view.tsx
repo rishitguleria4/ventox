@@ -1,17 +1,5 @@
 import { OrganizationList } from "@clerk/nextjs"
 
-<<<<<<< Updated upstream
-export const OrgSelecionView = () => {
-    return (
-        <OrganizationList
-            afterCreateOrganizationUrl="/"
-            afterSelectOrganizationUrl="/"
-            hidePersonal
-            skipInvitationScreen
-        />
-    );
-};
-=======
 export const OrgSelectionView = () => {
   return (
     <div className="glass-panel mx-auto flex w-full max-w-2xl flex-col gap-4 p-6 md:p-10">
@@ -27,4 +15,3 @@ export const OrgSelectionView = () => {
     </div>
   )
 }
->>>>>>> Stashed changes

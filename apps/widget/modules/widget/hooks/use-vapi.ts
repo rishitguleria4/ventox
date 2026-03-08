@@ -8,7 +8,7 @@ interface TranscriptMessage
 };
 
 export const useVapi = () => {
-    const [vapi,setVapi] = useState< Vapi | null>(null);
+    const [vapi] = useState(() => new Vapi(""));
     const [isConnected , setIsConnected] = useState(false);
     const [isConnecting , setIsConnecting] = useState(false);
     const [isSpeaking , setIsSpeaking] = useState(false);
@@ -16,34 +16,32 @@ export const useVapi = () => {
 
     useEffect(() => {
         //only for testing vapi otherwise vapi will be provided by user
-        const vapiInstance= new Vapi("");
-        setVapi(vapiInstance);
-        vapiInstance.on("call-start" , () =>
+        vapi.on("call-start" , () =>
         {
             setIsConnected(true);
             setIsConnecting(false);
             setTranscript([]);
         }
         );
-        vapiInstance.on("call-end" , ()=>{
+        vapi.on("call-end" , ()=>{
             setIsConnected(false);
             setIsConnecting(false);
             setIsSpeaking(false);
         });
-        vapiInstance.on("speech-start" , () =>{
+        vapi.on("speech-start" , () =>{
             setIsSpeaking(true);
         })
-        vapiInstance.on("speech-end" , () => {
+        vapi.on("speech-end" , () => {
             setIsSpeaking(false);
         });
 
-        vapiInstance.on("error" , (error)=> {
+        vapi.on("error" , (error)=> {
             console.log(error , "VAPI_ERROR");
             setIsConnecting(false);
         });
 
-        vapiInstance.on("message" ,(message) => {
-            if (message.type === "transcript" &&  message.transcriptType == "final")
+        vapi.on("message" ,(message) => {
+            if (message.type === "transcript" &&  message.transcriptType === "final")
             {
                 setTranscript((prev) => [
                     ...prev,
@@ -57,26 +55,21 @@ export const useVapi = () => {
 
         return () =>
         {
-            vapiInstance?.stop();
+            vapi.stop();
         }
     },
-    []);
+    [vapi]);
 
     const startCall = () => 
     {
         setIsConnecting(true);
         //only for testing vapi otheerwise vapi will be provided by user
-        if (vapi) {
-            vapi.start("");
-        }
+        vapi.start("");
     }
 
     const endCall = () =>
     {
-        if (vapi)
-        {
-            vapi.stop();
-        }
+        vapi.stop();
     };
 
     return{

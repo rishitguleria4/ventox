@@ -1,4 +1,3 @@
-import { ReactNode } from "react"
 import { cookies } from "next/headers"
 
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
@@ -8,7 +7,7 @@ import { OrganizationGuard } from "@/modules/auth/ui/components/organization-gua
 
 import { DashboardSidebar } from "../components/dashboard-sidebar"
 
-export const DashboardLayout = async ({ children }: {children: React.ReactNode} ) => {
+export const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
 
