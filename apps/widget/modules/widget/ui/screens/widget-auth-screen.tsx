@@ -18,6 +18,7 @@ import { api } from "@workspace/backend/convex/_generated/api";
 import { Card } from "@workspace/ui/components/card";
 import { Sparkles } from "lucide-react";
 import { useMutation } from "convex/react";
+import { WidgetFooter } from "../components/widget-footer";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -133,8 +134,8 @@ export const WidgetAuthScreen = () => {
           <Sparkles className="size-3.5 text-primary" />
           Hi! please enter your Name and Email-id to continue
         </div>
-
       </div>
+      <WidgetFooter/>
     </Card>
   );
 };

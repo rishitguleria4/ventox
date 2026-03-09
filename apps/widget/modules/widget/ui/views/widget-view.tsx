@@ -1,16 +1,27 @@
 "use client"
+import { error } from "node:console"
+import { screenAtom } from "../../atoms/widget-atoms"
 import { WidgetAuthScreen } from "../screens/widget-auth-screen"
-
+import { useAtomValue } from "jotai"
 interface Props {
   organizationId: string
 }
 
 export const WidgetView = ({ organizationId }: Props) => {
+  const screen = useAtomValue(screenAtom);
+
+  const screenComponents = {
+    error : <p>TODO: Error</p>,
+    loading : <p>TODO:Loading</p>,
+    auth : <WidgetAuthScreen/>,
+    voice :<p>TODO : Inbox</p>,
+    selection : <p>TODO : Selection </p>,
+    chat : <p>TODO : Chat</p>,
+    contact : <p> TODO :Contact </p>,
+  }
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-md items-center px-3 py-4">
-      <WidgetAuthScreen organizationId={organizationId} />
+    <main className="flex flex-col w-full h-screen justify">
+      {screenComponents[screen]}
     </main>
-  )
-}
-  )
-}
+  );
+};

@@ -20,7 +20,7 @@ const tabs = [
 
 export const WidgetFooter = () => {
   return (
-    <footer className="grid grid-cols-2 border-t border-border/60 bg-background/80 p-2 backdrop-blur-xl">
+    <footer className="grid grid-cols-2 overflow-hidden rounded-b-2xl border-b border-white/25 bg-linear-to-br from-slate-900 via-blue-900 to-blue-700 p-4 text-blue-200 ">
       {tabs.map((tab) => {
         const active = screen === tab.key
 
@@ -28,8 +28,8 @@ export const WidgetFooter = () => {
           <Button
             key={tab.key}
             className={cn(
-              "h-11 rounded-xl text-muted-foreground",
-              active && "bg-primary/10 text-primary"
+              "h-11 rounded-xl ",
+              active && "bg-primary/10 "
             )}
             onClick={() => {}}
             variant="ghost"
