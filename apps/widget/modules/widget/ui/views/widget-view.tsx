@@ -1,5 +1,5 @@
 "use client"
-import { error } from "node:console"
+"use client"
 import { screenAtom } from "../../atoms/widget-atoms"
 import { WidgetAuthScreen } from "../screens/widget-auth-screen"
 import { useAtomValue } from "jotai"
@@ -18,10 +18,13 @@ export const WidgetView = ({ organizationId }: Props) => {
     selection : <p>TODO : Selection </p>,
     chat : <p>TODO : Chat</p>,
     contact : <p> TODO :Contact </p>,
-  }
+  } as const satisfies Record<string, React.ReactNode>;
+
   return (
     <main className="flex flex-col w-full h-screen justify">
-      {screenComponents[screen]}
+      {screenComponents[screen] ?? <p>Unknown screen</p>}
+    </main>
+  );
     </main>
   );
 };
