@@ -16,7 +16,7 @@ const Page = () => {
             <CardDescription>Routing, fallback, and speech settings can be configured in this workspace.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className=" justify-center rounded-xl border border-border/70 bg-background/45 p-6 text-sm text-muted-foreground my-5 mx-3">
+            <div className="rounded-xl border border-border/70 bg-background/45 p-6 text-sm text-muted-foreground my-5 mx-3">
               Plugin setup UI placeholder.
             </div>
           </CardContent>

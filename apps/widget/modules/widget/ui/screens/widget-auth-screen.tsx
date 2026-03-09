@@ -61,13 +61,18 @@ export const WidgetAuthScreen = () => {
       currentUrl: window.location.href,
     };
 
-    const contactSessionId = await createContactSession({
-      ...values,
-      OrganizationId: organizationId,
-      metadata,
-    });
+    try {
+      const contactSessionId = await createContactSession({
+        ...values,
+        OrganizationId: organizationId,
+        metadata,
+      });
 
-    console.log({ contactSessionId });
+      // TODO: Navigate to next screen or store session
+    } catch (error) {
+      console.error("Failed to create contact session:", error);
+      // TODO: Show user-friendly error message (e.g., toast notification)
+    }
   };
 
   return (

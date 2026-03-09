@@ -8,7 +8,9 @@ interface Props {
 export const WidgetView = ({ organizationId }: Props) => {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md items-center px-3 py-4">
-      <WidgetAuthScreen/>
+      <WidgetAuthScreen organizationId={organizationId} />
     </main>
+  )
+}
   )
 }

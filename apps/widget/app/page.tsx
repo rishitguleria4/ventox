@@ -8,7 +8,7 @@ interface Props {
   }>
 };
 
-const  Page = ({ searchParams } : Props) =>
+const Page = ({ searchParams } : Props) =>
 {
   const { organizationId } = use(searchParams);
   return (
