@@ -25,7 +25,7 @@ export default function Page() {
                     Manage conversations, iterate on your widget, and ship voice flows with a polished operation center.
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex w-full h-full">
                   <OrganizationSwitcher hidePersonal skipInvitationScreen />
                   <UserButton />
                 </div>
@@ -34,21 +34,21 @@ export default function Page() {
 
             <section className="grid gap-4 md:grid-cols-3">
               <Card className="glass-panel py-0">
-                <CardHeader>
+                <CardHeader className="gap-2 w-full p-5">
                   <CardDescription>Total Users</CardDescription>
                   <CardTitle className="text-4xl">{users?.length ?? 0}</CardTitle>
                 </CardHeader>
               </Card>
               <Card className="glass-panel py-0">
-                <CardHeader>
+                <CardHeader className="gap-2 w-full p-5">
                   <CardDescription>Workspace Status</CardDescription>
                   <CardTitle>Operational</CardTitle>
                 </CardHeader>
               </Card>
-              <Card className="glass-panel py-0">
-                <CardHeader>
+              <Card className="bg-blend-color-burn glass-panel py-0">
+                <CardHeader className="gap-2 w-full p-5">
                   <CardDescription>Quick Action</CardDescription>
-                  <Button className="w-fit" onClick={() => addUser()}>
+                  <Button className="h-full w-fit" onClick={() => addUser()}>
                     Add Demo User
                   </Button>
                 </CardHeader>
@@ -56,7 +56,7 @@ export default function Page() {
             </section>
 
             <Card className="glass-panel py-0">
-              <CardHeader>
+              <CardHeader className="gap-2 w-full p-5">
                 <CardTitle>Live Data</CardTitle>
                 <CardDescription>Convex users payload from your current environment.</CardDescription>
               </CardHeader>

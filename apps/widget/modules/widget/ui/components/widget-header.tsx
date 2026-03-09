@@ -19,7 +19,7 @@ export const WidgetHeader = ({
       )}
     >
       <div className="absolute -top-14 -right-6 size-36 rounded-full bg-white/15 blur-2xl" />
-      <div className="relative z-10 flex items-center gap-2 text-xs tracking-[0.2em] uppercase opacity-80">
+      <div className="relative z-10 flex items-center gap-2 text-xs tracking-[0.2em] uppercase opacity-60">
         <Sparkles className="size-3.5" />
         Ventox Assistant
       </div>

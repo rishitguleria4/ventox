@@ -4,7 +4,7 @@ const Page = () => (
   <div className="dashboard-page">
     <div className="dashboard-inner">
       <section className="glass-panel p-6 md:p-8">
-        <p className="page-eyebrow">Account</p>
+      <p className="page-eyebrow">Account</p>
         <h1 className="page-title mt-3">Plans & Billing</h1>
         <p className="page-subtitle mt-3">Monitor usage, manage payment methods, and control workspace billing health.</p>
       </section>
