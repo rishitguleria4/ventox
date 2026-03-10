@@ -67,7 +67,7 @@ export const WidgetView = ({ organizationId }: Props) => {
     void verifySession();
     const timer = window.setInterval(() => {
       void verifySession();
-    }, 1000);
+    }, 30_000); // 30 seconds
 
     return () => {
       cancelled = true;
@@ -87,14 +87,14 @@ export const WidgetView = ({ organizationId }: Props) => {
     error : <WidgetErrorScreen/>,
     auth : <WidgetAuthScreen/>,
     inbox : <p>TODO : Inbox</p>,
-    voice :<p>TODO : Inbox</p>,
+    voice : <p>TODO : Voice</p>,
     selection : <p>TODO : Selection </p>,
     chat : <p>TODO : Chat</p>,
     contact : <p> TODO :Contact </p>,
   } as const satisfies Record<string, React.ReactNode>;
 
   return (
-    <main className="mx-auto my-auto mx-w-full flex flex-col w-full h-screen justify">
+    <main className="mx-auto my-auto max-w-full flex flex-col w-full h-screen justify-center">
       {screenComponents[screen] ?? <p>Unknown screen</p>}
     </main>
   );

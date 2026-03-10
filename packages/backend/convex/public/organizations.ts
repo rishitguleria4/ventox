@@ -3,9 +3,14 @@ import { createClerkClient } from "@clerk/backend";
 import { action } from "../_generated/server";
 
 
-const clerkClient = createClerkClient ({
-    secretKey : process.env.CLERK_SECRET_KEY || "",
-})
+const clerkSecretKey = process.env.CLERK_SECRET_KEY;
+if (!clerkSecretKey) {
+    throw new Error("CLERK_SECRET_KEY environment variable is required");
+}
+
+const clerkClient = createClerkClient({
+    secretKey: clerkSecretKey,
+});
 
 export const validate = action ({
     args:{
