@@ -19,6 +19,8 @@ import { Card } from "@workspace/ui/components/card";
 import { Sparkles } from "lucide-react";
 import { useMutation } from "convex/react";
 import { WidgetFooter } from "../components/widget-footer";
+import { useAtomValue, useSetAtom } from "jotai";
+import { contactSessionIdAtomFamily, organizationIdAtom } from "../../atoms/widget-atoms";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -26,10 +28,10 @@ const formSchema = z.object({
 });
 
 export const WidgetAuthScreen = () => {
-
-  const searchParams = useSearchParams();
-  const organizationId = searchParams.get("organizationId");
-
+  const organizationId = useAtomValue(organizationIdAtom);
+  const setContactSessionID = useSetAtom(
+    contactSessionIdAtomFamily(organizationId || "")
+  );
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,19 +63,12 @@ export const WidgetAuthScreen = () => {
       referrer: document.referrer || "direct",
       currentUrl: window.location.href,
     };
-
-    try {
-      const contactSessionId = await createContactSession({
-        ...values,
-        OrganizationId: organizationId,
-        metadata,
-      });
-
-      // TODO: Navigate to next screen or store session
-    } catch (error) {
-      console.error("Failed to create contact session:", error);
-      // TODO: Show user-friendly error message (e.g., toast notification)
-    }
+    const contactSessionId = await createContactSession({
+      ...values,
+       organizationId: organizationId,
+       metadata,
+    });
+    setContactSessionID(contactSessionId);
   };
 
   return (
