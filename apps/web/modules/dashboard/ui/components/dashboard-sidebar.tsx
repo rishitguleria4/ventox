@@ -9,6 +9,7 @@ import {
   Mic,
   PaletteIcon,
 } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -79,7 +80,29 @@ export const DashboardSidebar = () => {
 
   return (
     <Sidebar className="group border-r border-sidebar-border/60 bg-sidebar/85 backdrop-blur-2xl" collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border/60">
+      <SidebarHeader className="gap-3 border-b border-sidebar-border/60">
+        <Link
+          href="/"
+          aria-label="Ventox home"
+          className="flex h-11 items-center justify-center overflow-hidden rounded-xl border border-sidebar-border/70 bg-white/65 px-3 backdrop-blur-xl transition-colors hover:bg-white/85 group-data-[collapsible=icon]:size-9 group-data-[collapsible=icon]:px-0 dark:bg-white/5 dark:hover:bg-white/10"
+        >
+          <Image
+            src="/VENTOX-logo.png"
+            alt="Ventox"
+            width={2026}
+            height={380}
+            className="h-7 w-auto max-w-[8.5rem] object-contain group-data-[collapsible=icon]:hidden"
+            priority
+          />
+          <Image
+            src="/VENTOX-mark.png"
+            alt="Ventox"
+            width={380}
+            height={380}
+            className="hidden size-5 object-contain group-data-[collapsible=icon]:block"
+            priority
+          />
+        </Link>
         <SidebarMenuItem>
           <SidebarMenuButton asChild size="lg" className="h-12 rounded-xl">
             <OrganizationSwitcher

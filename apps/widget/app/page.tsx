@@ -4,13 +4,17 @@ import { use } from "react";
 
 interface Props {
   searchParams : Promise<{
-    organizationId : string,
+    organizationId?: string | string[],
   }>
 };
 
 const Page = ({ searchParams } : Props) =>
 {
-  const { organizationId } = use(searchParams);
+  const { organizationId: rawOrganizationId } = use(searchParams);
+  const organizationId = Array.isArray(rawOrganizationId)
+    ? rawOrganizationId[0] ?? null
+    : rawOrganizationId ?? null;
+
   return (
     <WidgetView organizationId={organizationId}/>
   );

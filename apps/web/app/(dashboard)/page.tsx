@@ -1,7 +1,7 @@
 "use client"
 
-import { Authenticated, Unauthenticated, useMutation, useQuery } from "convex/react"
-import { OrganizationSwitcher, SignInButton, UserButton } from "@clerk/nextjs"
+import { OrganizationSwitcher, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs"
+import { useMutation, useQuery } from "convex/react"
 
 import { api } from "@workspace/backend/convex/_generated/api"
 import { Button } from "@workspace/ui/components/button"
@@ -13,7 +13,7 @@ export default function Page() {
 
   return (
     <>
-      <Authenticated>
+      <SignedIn>
         <div className="dashboard-page">
           <div className="dashboard-inner">
             <section className="glass-panel p-6 md:p-8">
@@ -25,7 +25,7 @@ export default function Page() {
                     Manage conversations, iterate on your widget, and ship voice flows with a polished operation center.
                   </p>
                 </div>
-                <div className="flex w-full h-full">
+                <div className="flex w-full h-full justify-end ">
                   <OrganizationSwitcher hidePersonal skipInvitationScreen />
                   <UserButton />
                 </div>
@@ -68,9 +68,9 @@ export default function Page() {
             </Card>
           </div>
         </div>
-      </Authenticated>
+      </SignedIn>
 
-      <Unauthenticated>
+      <SignedOut>
         <div className="dashboard-page flex items-center justify-center">
           <Card className="glass-panel w-full max-w-xl py-0">
             <CardHeader>
@@ -84,7 +84,7 @@ export default function Page() {
             </CardContent>
           </Card>
         </div>
-      </Unauthenticated>
+      </SignedOut>
     </>
   )
 }

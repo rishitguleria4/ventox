@@ -12,6 +12,7 @@ export const SignUpview = () => {
       </section>
       <section className="glass-panel flex items-center justify-center p-4 md:p-8">
         <SignUp
+          fallbackRedirectUrl="/"
           appearance={{
             elements: {
               card: "!shadow-none !bg-transparent !border-0",

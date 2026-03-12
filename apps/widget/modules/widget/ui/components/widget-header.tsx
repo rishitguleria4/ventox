@@ -1,6 +1,6 @@
 import type React from "react"
 
-import { Sparkles } from "lucide-react"
+import Image from "next/image"
 
 import { cn } from "@workspace/ui/lib/utils"
 
@@ -19,9 +19,15 @@ export const WidgetHeader = ({
       )}
     >
       <div className="absolute -top-14 -right-6 size-36 rounded-full bg-white/15 blur-2xl" />
-      <div className="relative z-10 flex items-center gap-2 text-xs tracking-[0.2em] uppercase opacity-60">
-        <Sparkles className="size-3.5" />
-        Ventox Assistant
+      <div className="relative z-10">
+        <Image
+          src="/VENTOX-logo.png"
+          alt="Ventox"
+          width={2026}
+          height={380}
+          className="h-8 w-auto max-w-[11rem] object-contain"
+          priority
+        />
       </div>
       <div className="relative z-10">{children}</div>
     </header>

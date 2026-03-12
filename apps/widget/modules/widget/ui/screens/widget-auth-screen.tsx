@@ -7,7 +7,6 @@ import {
   FormItem,
   FormMessage,
 } from "@workspace/ui/components/form";
-import { useSearchParams } from "next/navigation";
 import { WidgetHeader } from "../components/widget-header";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
@@ -20,7 +19,12 @@ import { Sparkles } from "lucide-react";
 import { useMutation } from "convex/react";
 import { WidgetFooter } from "../components/widget-footer";
 import { useAtomValue, useSetAtom } from "jotai";
-import { contactSessionIdAtomFamily, organizationIdAtom } from "../../atoms/widget-atoms";
+import {
+  contactSessionIdAtomFamily,
+  errorMessageAtom,
+  organizationIdAtom,
+  screenAtom,
+} from "../../atoms/widget-atoms";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -32,6 +36,8 @@ export const WidgetAuthScreen = () => {
   const setContactSessionID = useSetAtom(
     contactSessionIdAtomFamily(organizationId || "")
   );
+  const setErrorMessage = useSetAtom(errorMessageAtom);
+  const setScreen = useSetAtom(screenAtom);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,9 +49,9 @@ export const WidgetAuthScreen = () => {
   const createContactSession = useMutation(api.public.contactSessions.create);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-
     if (!organizationId) {
-      console.error("Missing organizationId");
+      setErrorMessage("Missing organization ID");
+      setScreen("error");
       return;
     }
 
@@ -63,12 +69,21 @@ export const WidgetAuthScreen = () => {
       referrer: document.referrer || "direct",
       currentUrl: window.location.href,
     };
-    const contactSessionId = await createContactSession({
-      ...values,
-       organizationId: organizationId,
-       metadata,
-    });
-    setContactSessionID(contactSessionId);
+
+    try {
+      const contactSessionId = await createContactSession({
+        ...values,
+        organizationId,
+        metadata,
+      });
+
+      setErrorMessage(null);
+      setContactSessionID(contactSessionId);
+      setScreen("selection");
+    } catch {
+      setErrorMessage("Unable to start your session right now");
+      setScreen("error");
+    }
   };
 
   return (
@@ -87,7 +102,6 @@ export const WidgetAuthScreen = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-
             <FormField
               control={form.control}
               name="name"
@@ -121,7 +135,6 @@ export const WidgetAuthScreen = () => {
             >
               Continue
             </Button>
-
           </form>
         </Form>
 
@@ -130,7 +143,7 @@ export const WidgetAuthScreen = () => {
           Hi! please enter your Name and Email-id to continue
         </div>
       </div>
-      <WidgetFooter/>
+      <WidgetFooter />
     </Card>
   );
 };
