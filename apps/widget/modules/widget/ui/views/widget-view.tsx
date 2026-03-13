@@ -8,7 +8,7 @@ import { contactSessionIdAtomFamily, organizationIdAtom, screenAtom } from "../.
 import { WidgetAuthScreen } from "../screens/widget-auth-screen"
 import { WidgetErrorScreen } from "../screens/widget-error-screen"
 import { WidgetLoadingScreen } from "../screens/widget-loading-screen"
-import { WidgetSelectioScreen } from "../screens/widget-selection-screen";
+import { WidgetSelectionScreen } from "../screens/widget-selection-screen";
 import { WidgetChatScreen } from "../screens/widget-chat-screen";
 interface Props {
   organizationId: string | null
@@ -89,8 +89,8 @@ export const WidgetView = ({ organizationId }: Props) => {
     error : <WidgetErrorScreen/>,
     auth : <WidgetAuthScreen/>,
     inbox : <p>TODO : Inbox</p>,
-    voice : <p>TODO : Vo ice</p>,
-    selection : <WidgetSelectioScreen />,
+    voice : <p>TODO : Voice</p>,
+    selection : <WidgetSelectionScreen />,
     chat : <WidgetChatScreen />,
     contact : <p> TODO :Contact </p>,
   } as const satisfies Record<string, React.ReactNode>;

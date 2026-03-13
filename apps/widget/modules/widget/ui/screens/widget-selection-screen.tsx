@@ -9,7 +9,7 @@ import { Button } from "@workspace/ui/components/button";
 import { useMutation } from "convex/react";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { useState } from "react";
-export const WidgetSelectioScreen= () => {
+export const WidgetSelectionScreen = () => {
 
     const setScreen = useSetAtom(screenAtom);
     const organizationId  = useAtomValue(organizationIdAtom);
@@ -19,7 +19,7 @@ export const WidgetSelectioScreen= () => {
     )
 
     const createConversations = useMutation(api.public.conversations.create);
-    const [ispending , setIsPending] = useState(false);
+    const [isPending, setIsPending] = useState(false);
     const setConversationId = useSetAtom(conversationIdAtom);
     const handleNewConversation = async() =>{
 
@@ -60,7 +60,7 @@ export const WidgetSelectioScreen= () => {
             </div>
             </WidgetHeader>
             <div className="flex flex-col flex-1 items-center justify-center gap-y-4 p-4 text-muted-foreground">
-                < Button className="w-full h-16 justify-between" onClick={handleNewConversation} disabled = {ispending}>
+                < Button className="w-full h-16 justify-between" onClick={handleNewConversation} disabled = {isPending}>
                     <div className="flex items-center gap-x-2">
                         <MessageSquareTextIcon className="size-4" />
                         <span> start chat </span>

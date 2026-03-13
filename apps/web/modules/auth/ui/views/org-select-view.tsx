@@ -1,7 +1,13 @@
 import { OrganizationList } from "@clerk/nextjs"
 
+const isValidRedirectUrl = (url: string): boolean => {
+  // Only allow relative paths starting with /
+  return url.startsWith("/") && !url.startsWith("//")
+}
+
 export const OrgSelectionView = ({ redirectUrl = "/" }: { redirectUrl?: string }) => {
-  const completionUrl = `/org-selection/complete?redirectUrl=${encodeURIComponent(redirectUrl)}`
+  const safeRedirectUrl = isValidRedirectUrl(redirectUrl) ? redirectUrl : "/"
+  const completionUrl = `/org-selection/complete?redirectUrl=${encodeURIComponent(safeRedirectUrl)}`
 
   return (
     <div className="glass-panel mx-auto flex w-full max-w-2xl flex-col gap-4 p-6 md:p-10">

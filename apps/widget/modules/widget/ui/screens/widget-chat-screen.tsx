@@ -20,21 +20,18 @@ export const WidgetChatScreen = () => {
 
   const conversationId = useAtomValue(conversationIdAtom);
   const organizationId = useAtomValue(organizationIdAtom);
-
-  const contactSessionId = organizationId
-    ? useAtomValue(contactSessionIdAtomFamily(organizationId))
-    : null;
+  const contactSessionId = useAtomValue(
+    contactSessionIdAtomFamily(organizationId ?? "")
+  );
 
   const onBack = () => {
     setConversationId(null);
     setScreen("selection");
   };
 
-  const shouldFetch = !!conversationId && !!contactSessionId;
-
   const conversation = useQuery(
     api.public.conversations.getOne,
-    shouldFetch
+    conversationId && contactSessionId
       ? {
           conversationId,
           contactSessionId,

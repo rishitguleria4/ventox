@@ -19,14 +19,20 @@ export const DashboardLayout = async ({ children }: { children: React.ReactNode 
   const orgSelectionSessionKey = sessionId ?? userId ?? null
 
   if (userId && orgSelectionCookieValue !== orgSelectionSessionKey) {
-    const client = await clerkClient()
-    const memberships = await client.users.getOrganizationMembershipList({
-      userId,
-      limit: 2,
-    })
+    try {
+      const client = await clerkClient()
+      const memberships = await client.users.getOrganizationMembershipList({
+        userId,
+        limit: 2,
+      })
 
-    if (memberships.totalCount > 1) {
-      redirect("/org-selection")
+      if (memberships.totalCount > 1) {
+        redirect("/org-selection")
+      }
+    } catch (error) {
+      // Log error and allow user to continue to dashboard
+      // They can manually switch orgs if needed
+      console.error("Failed to fetch organization memberships:", error)
     }
   }
 
