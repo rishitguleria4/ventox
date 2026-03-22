@@ -2,30 +2,47 @@
 
 import { useAtomValue } from "jotai";
 import { AlertTriangleIcon } from "lucide-react";
+
+import { Button } from "@workspace/ui/components/button";
+
 import { errorMessageAtom } from "../../atoms/widget-atoms";
-import { WidgetHeader } from "../components/widget-header";
 import { WidgetFooter } from "../components/widget-footer";
+import { WidgetHeader } from "../components/widget-header";
 
-export const WidgetErrorScreen= () => {
-    const errorMessage = useAtomValue(errorMessageAtom);
+export const WidgetErrorScreen = () => {
+  const errorMessage = useAtomValue(errorMessageAtom);
 
-    return (
-        <>
-            <WidgetHeader>
-            <div className="mt-5 space-y-3 px-2 pb-6">
-                <p className="text-3xl font-semibold tracking-tight">Hi there</p>
-                <p className="max-w-xs text-sm text-white/90">
-                    Let&apos;s get you started
-                </p>
-            </div>
-            </WidgetHeader>
-            <div className="flex flex-col flex-1 items-center justify-center gap-y-4 p-4 text-muted-foreground">
-                <AlertTriangleIcon/>
-                <p className="text-sm">
-                    {errorMessage || "invalid configuration"}
-                </p>
-            </div>
-            <WidgetFooter />
-        </>
-    )
-}
+  return (
+    <>
+      <WidgetHeader>
+        <div className="space-y-3">
+          <p className="text-3xl font-semibold tracking-tight">
+            System Configuration Error
+          </p>
+          <p className="max-w-sm text-sm leading-6 text-white/88">
+            Initialization sequence halted due to invalid session parameters.
+          </p>
+        </div>
+      </WidgetHeader>
+      <div className="widget-main items-center justify-center gap-4 px-4 py-4">
+        <div className="widget-card w-full max-w-sm text-center">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-destructive/12 text-destructive">
+            <AlertTriangleIcon className="size-6" />
+          </div>
+          <h2 className="mt-5 text-lg font-semibold">Configuration Validation Failed</h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {errorMessage || "Invalid configuration"}
+          </p>
+          <Button
+            className="mt-5 rounded-full px-4"
+            onClick={() => window.location.reload()}
+            variant="outline"
+          >
+            Retry
+          </Button>
+        </div>
+      </div>
+      <WidgetFooter />
+    </>
+  );
+};

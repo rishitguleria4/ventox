@@ -1,9 +1,9 @@
-import { HomeIcon, InboxIcon } from "lucide-react"
+import { HomeIcon, InboxIcon } from "lucide-react";
 
-import { Button } from "@workspace/ui/components/button"
-import { cn } from "@workspace/ui/lib/utils"
-
-const screen = "selection"
+import { Button } from "@workspace/ui/components/button";
+import { cn } from "@workspace/ui/lib/utils";
+import { useAtomValue, useSetAtom } from "jotai";
+import { screenAtom } from "../../atoms/widget-atoms";
 
 const tabs = [
   {
@@ -16,29 +16,36 @@ const tabs = [
     label: "Inbox",
     key: "inbox",
   },
-] as const
+] as const;
 
 export const WidgetFooter = () => {
-  return (
-    <footer className="grid grid-cols-2 overflow-hidden rounded-b-2xl border-b border-white/25 bg-linear-to-br from-slate-900 via-blue-900 to-blue-700 p-4 text-blue-200 ">
-      {tabs.map((tab) => {
-        const active = screen === tab.key
+  const screen = useAtomValue(screenAtom);
+  const setScreen = useSetAtom(screenAtom);
 
-        return (
-          <Button
-            key={tab.key}
-            className={cn(
-              "h-11 rounded-xl ",
-              active && "bg-primary/10 "
-            )}
-            onClick={() => {}}
-            variant="ghost"
-          >
-            <tab.icon className="size-4" />
-            {tab.label}
-          </Button>
-        )
-      })}
+  return (
+    <footer className="border-t border-white/14 bg-slate-950/90 px-4 py-3 text-slate-200 backdrop-blur-xl">
+      <div className="mx-auto grid max-w-sm grid-cols-2 gap-2">
+        {tabs.map((tab) => {
+          const active = screen === tab.key;
+
+          return (
+            <Button
+              key={tab.key}
+              className={cn(
+                "h-11 rounded-[1rem] border border-transparent text-slate-200 transition-all duration-200",
+                active
+                  ? "bg-gradient-to-r from-primary via-blue-500 to-cyan-400 text-white shadow-[0_24px_48px_-30px_rgba(59,130,246,0.6)]"
+                  : "bg-white/6 hover:bg-white/10",
+              )}
+              onClick={() => setScreen(tab.key)}
+              variant="ghost"
+            >
+              <tab.icon className="size-4" />
+              {tab.label}
+            </Button>
+          );
+        })}
+      </div>
     </footer>
-  )
-}
+  );
+};

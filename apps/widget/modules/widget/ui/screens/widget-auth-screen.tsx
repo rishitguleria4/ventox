@@ -1,5 +1,14 @@
 "use client";
 
+import { useMutation } from "convex/react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { MailIcon, SparklesIcon, UserRoundIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { api } from "@workspace/backend/convex/_generated/api";
+import { Button } from "@workspace/ui/components/button";
 import {
   Form,
   FormControl,
@@ -7,24 +16,16 @@ import {
   FormItem,
   FormMessage,
 } from "@workspace/ui/components/form";
-import { WidgetHeader } from "../components/widget-header";
-import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "@workspace/backend/convex/_generated/api";
-import { Card } from "@workspace/ui/components/card";
-import { Sparkles } from "lucide-react";
-import { useMutation } from "convex/react";
-import { WidgetFooter } from "../components/widget-footer";
-import { useAtomValue, useSetAtom } from "jotai";
+
 import {
   contactSessionIdAtomFamily,
   errorMessageAtom,
   organizationIdAtom,
   screenAtom,
 } from "../../atoms/widget-atoms";
+import { WidgetFooter } from "../components/widget-footer";
+import { WidgetHeader } from "../components/widget-header";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -34,7 +35,7 @@ const formSchema = z.object({
 export const WidgetAuthScreen = () => {
   const organizationId = useAtomValue(organizationIdAtom);
   const setContactSessionID = useSetAtom(
-    contactSessionIdAtomFamily(organizationId || "")
+    contactSessionIdAtomFamily(organizationId || ""),
   );
   const setErrorMessage = useSetAtom(errorMessageAtom);
   const setScreen = useSetAtom(screenAtom);
@@ -87,63 +88,86 @@ export const WidgetAuthScreen = () => {
   };
 
   return (
-    <Card className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-white/35 bg-white/75 py-0 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-white/5">
-
+    <>
       <WidgetHeader>
-        <div className="mt-5 space-y-3 px-2 pb-6">
-          <p className="text-3xl font-semibold tracking-tight">Hi there</p>
-          <p className="max-w-xs text-sm text-white/90">
-            Let&apos;s get you started
+        <div className="space-y-3">
+          <p className="text-3xl font-semibold tracking-tight">
+            Identity Verification
+          </p>
+          <p className="max-w-sm text-sm leading-6 text-white/88">
+            Please authenticate your session to ensure persistent access to your
+            support history and secure communications.
           </p>
         </div>
       </WidgetHeader>
 
-      <div className="flex min-h-80 flex-1 flex-col gap-4 bg-gradient-to-b from-background/80 to-background/45 p-4">
+      <div className="widget-main gap-4 px-4 py-4 min-h-0 overflow-y-auto">
+        <div className="widget-card">
+          <Form {...form}>
+            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <UserRoundIcon className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          className="h-12 rounded-[1.15rem] border-border/70 bg-background/70 pl-11"
+                          placeholder="Your name"
+                          type="text"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Your name" type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <MailIcon className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          className="h-12 rounded-[1.15rem] border-border/70 bg-background/70 pl-11"
+                          placeholder="Your email"
+                          type="email"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Your email" type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <Button
+                className="h-12 w-full rounded-[1.15rem]"
+                disabled={form.formState.isSubmitting}
+                size="lg"
+                type="submit"
+              >
+                Continue
+              </Button>
+            </form>
+          </Form>
+        </div>
 
-            <Button
-              type="submit"
-              size="lg"
-              disabled={form.formState.isSubmitting}
-            >
-              Continue
-            </Button>
-          </form>
-        </Form>
-
-        <div className="mt-auto flex items-center gap-2 rounded-xl border border-dashed border-border/70 bg-background/40 p-3 text-xs text-muted-foreground">
-          <Sparkles className="size-3.5 text-primary" />
-          Hi! please enter your Name and Email-id to continue
+        <div className="widget-soft-card flex items-start gap-3">
+          <SparklesIcon className="mt-0.5 size-4 text-primary" />
+          <p className="text-sm leading-6 text-foreground/82">
+            This protocol ensures your support history remains securely attached
+            to your organizational profile and isolated from unauthorized access.
+          </p>
         </div>
       </div>
       <WidgetFooter />
-    </Card>
+    </>
   );
 };

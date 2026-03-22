@@ -1,4 +1,13 @@
 "use client";
+
+import { useEffect } from "react";
+import { useAction, useMutation } from "convex/react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { Loader2Icon } from "lucide-react";
+
+import { api } from "@workspace/backend/convex/_generated/api";
+import { Id } from "@workspace/backend/convex/_generated/dataModel";
+
 import {
   contactSessionIdAtomFamily,
   errorMessageAtom,
@@ -6,43 +15,43 @@ import {
   organizationIdAtom,
   screenAtom,
 } from "../../atoms/widget-atoms";
-import { useAtomValue, useSetAtom } from "jotai";
-import { Loader2Icon } from "lucide-react";
-import { WidgetHeader } from "../components/widget-header";
 import { WidgetFooter } from "../components/widget-footer";
-import { useEffect } from "react";
-import { useAction, useMutation } from "convex/react";
-import { api } from "@workspace/backend/convex/_generated/api";
-import { Id } from "@workspace/backend/convex/_generated/dataModel";
+import { WidgetHeader } from "../components/widget-header";
 
 export const WidgetLoadingScreen = ({
   organizationId,
 }: {
   organizationId: string | null;
 }) => {
-  const contactSessionId = useAtomValue(contactSessionIdAtomFamily(organizationId || ""));
+  const contactSessionId = useAtomValue(
+    contactSessionIdAtomFamily(organizationId || ""),
+  );
   const loadingMessage = useAtomValue(loadingMessageAtom);
   const setOrganizationId = useSetAtom(organizationIdAtom);
-  const setContactSessionId = useSetAtom(contactSessionIdAtomFamily(organizationId || ""));
+  const setContactSessionId = useSetAtom(
+    contactSessionIdAtomFamily(organizationId || ""),
+  );
   const setErrorMessage = useSetAtom(errorMessageAtom);
   const setLoadingMessage = useSetAtom(loadingMessageAtom);
   const setScreen = useSetAtom(screenAtom);
 
   const validateOrganization = useAction(api.public.organizations.validate);
-  const validateContactSession = useMutation(api.public.contactSessions.validate);
+  const validateContactSession = useMutation(
+    api.public.contactSessions.validate,
+  );
 
   useEffect(() => {
     let cancelled = false;
 
     const initialize = async () => {
-      setLoadingMessage("Finding Organization ID...");
+      setLoadingMessage("Finding organization ID...");
       if (!organizationId) {
         setErrorMessage("Organization ID required");
         setScreen("error");
         return;
       }
 
-      setLoadingMessage("Verifying Organization...");
+      setLoadingMessage("Verifying organization...");
       let organizationResult: Awaited<ReturnType<typeof validateOrganization>>;
 
       try {
@@ -66,7 +75,7 @@ export const WidgetLoadingScreen = ({
       }
 
       setOrganizationId(organizationId);
-      setLoadingMessage("Finding contact session ID...");
+      setLoadingMessage("Finding contact session...");
 
       if (!contactSessionId) {
         setScreen("auth");
@@ -118,14 +127,25 @@ export const WidgetLoadingScreen = ({
   return (
     <>
       <WidgetHeader>
-        <div className="mt-5 space-y-3 px-2 pb-6">
-          <p className="text-3xl font-semibold tracking-tight">Hi there</p>
-          <p className="max-w-xs text-sm text-white/90">Let&apos;s get you started</p>
+        <div className="space-y-3">
+          <p className="text-3xl font-semibold tracking-tight">
+            Initializing Secure Session
+          </p>
+          <p className="max-w-sm text-sm leading-6 text-white/88">
+            Validating enterprise credentials and establishing encrypted connection.
+          </p>
         </div>
       </WidgetHeader>
-      <div className="flex flex-1 flex-col items-center justify-center gap-y-4 p-4 text-muted-foreground">
-        <Loader2Icon className="animate-spin" />
-        <p className="text-sm">{loadingMessage || "Loading.."}</p>
+      <div className="widget-main items-center justify-center gap-4 px-4 py-4">
+        <div className="widget-card w-full max-w-sm text-center">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Loader2Icon className="size-6 animate-spin" />
+          </div>
+          <p className="mt-5 text-base font-semibold">Establishing Connection</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {loadingMessage || "Synchronizing session state..."}
+          </p>
+        </div>
       </div>
       <WidgetFooter />
     </>
