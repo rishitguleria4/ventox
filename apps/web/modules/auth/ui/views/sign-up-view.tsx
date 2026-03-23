@@ -1,8 +1,31 @@
 import { SignUp } from "@clerk/nextjs";
-import { BotIcon, PaintbrushVerticalIcon, RocketIcon } from "lucide-react";
+import {
+  BotIcon,
+  PaintbrushVerticalIcon,
+  RocketIcon,
+  type LucideIcon,
+} from "lucide-react";
 import Image from "next/image";
 
 export const SignUpview = () => {
+  const metrics: Array<[LucideIcon, string, string]> = [
+    [
+      RocketIcon,
+      "Fast setup",
+      "Get from account creation to branded support flow quickly.",
+    ],
+    [
+      PaintbrushVerticalIcon,
+      "Brand control",
+      "Tune the widget and dashboard with one visual language.",
+    ],
+    [
+      BotIcon,
+      "Assistant ready",
+      "Prepare chat and voice surfaces for real customer conversations.",
+    ],
+  ];
+
   return (
     <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
       <section className="hero-panel hidden lg:block">
@@ -30,23 +53,7 @@ export const SignUpview = () => {
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
-            {[
-              [
-                RocketIcon,
-                "Fast setup",
-                "Get from account creation to branded support flow quickly.",
-              ],
-              [
-                PaintbrushVerticalIcon,
-                "Brand control",
-                "Tune the widget and dashboard with one visual language.",
-              ],
-              [
-                BotIcon,
-                "Assistant ready",
-                "Prepare chat and voice surfaces for real customer conversations.",
-              ],
-            ].map(([Icon, title, copy]) => (
+            {metrics.map(([Icon, title, copy]) => (
               <div key={title} className="metric-card p-4">
                 <Icon className="size-4 text-primary" />
                 <p className="mt-3 text-sm font-semibold">{title}</p>

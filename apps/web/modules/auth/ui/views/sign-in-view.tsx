@@ -1,8 +1,27 @@
 import { SignIn } from "@clerk/nextjs";
-import { HeadphonesIcon, ShieldCheckIcon, SparklesIcon } from "lucide-react";
+import {
+  HeadphonesIcon,
+  ShieldCheckIcon,
+  SparklesIcon,
+  type LucideIcon,
+} from "lucide-react";
 import Image from "next/image";
 
 export const SignInView = () => {
+  const metrics: Array<[LucideIcon, string, string]> = [
+    [SparklesIcon, "Refined UI", "Premium surfaces and cleaner hierarchy."],
+    [
+      HeadphonesIcon,
+      "Support-first",
+      "Built around live conversation workflows.",
+    ],
+    [
+      ShieldCheckIcon,
+      "Confident setup",
+      "Clear onboarding and secure account entry.",
+    ],
+  ];
+
   return (
     <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
       <section className="hero-panel hidden lg:block">
@@ -30,23 +49,7 @@ export const SignInView = () => {
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
-            {[
-              [
-                SparklesIcon,
-                "Refined UI",
-                "Premium surfaces and cleaner hierarchy.",
-              ],
-              [
-                HeadphonesIcon,
-                "Support-first",
-                "Built around live conversation workflows.",
-              ],
-              [
-                ShieldCheckIcon,
-                "Confident setup",
-                "Clear onboarding and secure account entry.",
-              ],
-            ].map(([Icon, title, copy]) => (
+            {metrics.map(([Icon, title, copy]) => (
               <div key={title} className="metric-card p-4">
                 <Icon className="size-4 text-primary" />
                 <p className="mt-3 text-sm font-semibold">{title}</p>

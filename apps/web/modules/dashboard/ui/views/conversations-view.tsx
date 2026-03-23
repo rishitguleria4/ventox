@@ -39,7 +39,7 @@ import { getCountryPresentation } from "@workspace/ui/lib/country";
 import { cn } from "@workspace/ui/lib/utils";
 import { useInfiniteScroll } from "@workspace/ui/hooks/use-infinite-scroll";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
+import { useAction, useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import {
   CheckIcon,
   Clock3Icon,
@@ -47,12 +47,13 @@ import {
   MailIcon,
   MonitorIcon,
   RefreshCwIcon,
+  SparklesIcon,
   TriangleAlertIcon,
   User2Icon,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { ConversationPanel } from "../components/conversation-panel";
 
@@ -126,6 +127,14 @@ export const ConversationsView = () => {
   ) as Id<"conversations"> | null;
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [isSendingReply, setIsSendingReply] = useState(false);
+  const [isEnhancingReply, setIsEnhancingReply] = useState(false);
+  const [escalationNotification, setEscalationNotification] = useState<
+    string | null
+  >(null);
+  const previousConversationStatus = useRef<{
+    conversationId: Id<"conversations">;
+    status: "unresolved" | "escalated" | "resolved";
+  } | null>(null);
 
   const initialConversation = usePaginatedQuery(
     api.private.conversations.getMany,
@@ -180,6 +189,7 @@ export const ConversationsView = () => {
 
   const updateStatus = useMutation(api.private.conversations.updateStatus);
   const sendHumanReply = useMutation(api.private.messages.create);
+  const enhanceDraft = useAction(api.private.messages.enhanceDraft);
   const replyForm = useForm<z.infer<typeof replyFormSchema>>({
     resolver: zodResolver(replyFormSchema),
     mode: "onChange",
@@ -192,6 +202,43 @@ export const ConversationsView = () => {
     () => [...messages.results].reverse(),
     [messages.results],
   );
+
+  useEffect(() => {
+    if (!conversation) {
+      previousConversationStatus.current = null;
+      return;
+    }
+
+    const previous = previousConversationStatus.current;
+
+    if (
+      previous &&
+      previous.conversationId === conversation._id &&
+      previous.status !== "escalated" &&
+      conversation.status === "escalated"
+    ) {
+      setEscalationNotification(
+        "Escalated to human support. Dashboard team has been notified.",
+      );
+    }
+
+    previousConversationStatus.current = {
+      conversationId: conversation._id,
+      status: conversation.status,
+    };
+  }, [conversation]);
+
+  useEffect(() => {
+    if (!escalationNotification) {
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setEscalationNotification(null);
+    }, 7000);
+
+    return () => clearTimeout(timeout);
+  }, [escalationNotification]);
 
   const handleStatusChange = async (
     nextStatus: "unresolved" | "escalated" | "resolved",
@@ -231,6 +278,42 @@ export const ConversationsView = () => {
       });
     } finally {
       setIsSendingReply(false);
+    }
+  };
+
+  const handleEnhanceReply = async () => {
+    if (!conversation) {
+      return;
+    }
+
+    const currentMessage = replyForm.getValues("message").trim();
+
+    if (!currentMessage) {
+      replyForm.setError("message", {
+        message: "Write a reply first, then enhance it.",
+      });
+      return;
+    }
+
+    setIsEnhancingReply(true);
+
+    try {
+      const result = await enhanceDraft({
+        conversationId: conversation._id,
+        draft: currentMessage,
+      });
+
+      replyForm.setValue("message", result.text, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      replyForm.clearErrors("message");
+    } catch {
+      replyForm.setError("message", {
+        message: "Unable to enhance your text right now.",
+      });
+    } finally {
+      setIsEnhancingReply(false);
     }
   };
 
@@ -347,6 +430,15 @@ export const ConversationsView = () => {
         <div className="flex min-h-0 flex-col gap-5">
           {conversation ? (
             <>
+              {escalationNotification ? (
+                <section className="rounded-[1.25rem] border border-emerald-500/30 bg-emerald-500/12 px-4 py-3 text-sm text-emerald-950 shadow-[0_20px_44px_-32px_rgba(16,185,129,0.5)] dark:text-emerald-100">
+                  <div className="flex items-start gap-2.5">
+                    <TriangleAlertIcon className="mt-0.5 size-4" />
+                    <p>{escalationNotification}</p>
+                  </div>
+                </section>
+              ) : null}
+
               <section className="glass-panel relative overflow-hidden p-5 md:p-6">
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-r from-primary/12 via-sky-500/8 to-emerald-400/10" />
                 <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
@@ -500,7 +592,7 @@ export const ConversationsView = () => {
                                     String(item.stepOrder)
                                 }
                                 from={
-                                  message.role === "user" ? "user" : "assistant"
+                                  message.role === "user" ? "assistant" : "user"
                                 }
                               >
                                 <AIMessageContent
@@ -516,7 +608,7 @@ export const ConversationsView = () => {
                                         assistantTone === "human"
                                           ? "text-emerald-700 dark:text-emerald-300"
                                           : assistantTone === "update"
-                                            ? "text-amber-700 dark:text-amber-300"
+                                            ? "text-gray-600 dark:text-amber-300"
                                             : "text-sky-700 dark:text-sky-300",
                                       )}
                                     >
@@ -525,7 +617,7 @@ export const ConversationsView = () => {
                                   ) : null}
                                   <AIResponse className="text-[15px] leading-7">
                                     {getMessageText(message) ??
-                                      "Unsupported message format"}
+                                      "loading..."}
                                   </AIResponse>
                                 </AIMessageContent>
                               </AIMessage>
@@ -588,23 +680,40 @@ export const ConversationsView = () => {
                                   value={field.value}
                                 />
                                 <AIInputToolbar className="gap-3">
-                                  <AIInputTools>
+                                  <AIInputTools className="gap-2">
                                     <Badge
                                       variant="outline"
                                       className="rounded-full border-border/70 px-3 py-1 text-[10px] tracking-[0.18em] uppercase"
                                     >
                                       Human Reply
                                     </Badge>
-                                    <span className="hidden text-xs text-muted-foreground md:inline">
-                                      Press Enter to send
-                                    </span>
+                                    <Button
+                                      className="h-7 gap-1.5 rounded-full border border-indigo-500/20 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-3.5 text-xs font-semibold tracking-wide text-indigo-700 shadow-sm transition-all hover:bg-gradient-to-r hover:from-indigo-500/20 hover:to-purple-500/20 hover:text-indigo-800 dark:border-indigo-400/20 dark:text-indigo-300 dark:hover:text-indigo-200"
+                                      type="button"
+                                      variant="ghost"
+                                      onClick={handleEnhanceReply}
+                                      disabled={
+                                        conversation.status === "resolved" ||
+                                        isSendingReply ||
+                                        isEnhancingReply
+                                      }
+                                    >
+                                      <SparklesIcon className="size-3.5" />
+                                      {isEnhancingReply
+                                        ? "Enhancing..."
+                                        : "Enhance AI"}
+                                    </Button>
                                   </AIInputTools>
+                                  <span className="hidden text-xs text-muted-foreground md:inline">
+                                    Press Enter to send
+                                  </span>
                                   <AIInputSubmit
                                     className="min-w-[92px]"
                                     disabled={
                                       conversation.status === "resolved" ||
                                       !replyForm.formState.isValid ||
-                                      isSendingReply
+                                      isSendingReply ||
+                                      isEnhancingReply
                                     }
                                     size="default"
                                     status={

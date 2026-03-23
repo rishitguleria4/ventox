@@ -1,5 +1,6 @@
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { withSentryConfig } from "@sentry/nextjs"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -11,4 +12,6 @@ const nextConfig = {
   },
 }
 
-export default nextConfig
+export default withSentryConfig(nextConfig, {
+  silent: true,
+})

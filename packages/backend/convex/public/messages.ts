@@ -5,6 +5,7 @@ import { ConvexError, v } from "convex/values";
 import { action, query } from "../_generated/server";
 import { components, internal } from "../_generated/api";
 import { supportAgent } from "../system/ai/agents/supportAgent";
+import { enhanceSupportDraftText } from "../system/ai/services/enhanceText";
 
 const hasConfiguredAiProvider = () =>
   Boolean(process.env.GOOGLE_GENERATIVE_AI_API_KEY);
@@ -172,5 +173,57 @@ export const getMany = query({
     });
 
     return { ...paginated, streams };
+  },
+});
+
+export const enhanceDraft = action({
+  args: {
+    draft: v.string(),
+    threadId: v.string(),
+    contactSessionId: v.id("contactSessions"),
+  },
+
+  handler: async (ctx, args) => {
+    const draft = args.draft.trim();
+
+    if (!draft) {
+      throw new ConvexError({
+        code: "EMPTY_MESSAGE",
+        message: "Message cannot be empty",
+      });
+    }
+
+    const contactSession = await ctx.runQuery(
+      internal.system.contactSessions.getOne,
+      { contactSessionId: args.contactSessionId },
+    );
+
+    if (!contactSession || contactSession.expiresAt < Date.now()) {
+      throw new ConvexError({
+        code: "UNAUTHORIZED",
+        message: "Invalid session",
+      });
+    }
+
+    const conversation = await ctx.runQuery(
+      internal.system.conversations.getbyThreadId,
+      { threadId: args.threadId },
+    );
+
+    if (!conversation || conversation.contactSessionId !== contactSession._id) {
+      throw new ConvexError({
+        code: "NOT_FOUND",
+        message: "Conversation not found",
+      });
+    }
+
+    if (conversation.status === "resolved") {
+      throw new ConvexError({
+        code: "CONVERSATION_RESOLVED",
+        message: "Conversation already resolved",
+      });
+    }
+
+    return await enhanceSupportDraftText(draft);
   },
 });

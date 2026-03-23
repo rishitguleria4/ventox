@@ -1,4 +1,9 @@
-import { Building2Icon, SparklesIcon, Users2Icon } from "lucide-react";
+import {
+  Building2Icon,
+  SparklesIcon,
+  Users2Icon,
+  type LucideIcon,
+} from "lucide-react";
 import { OrganizationList } from "@clerk/nextjs";
 
 const isValidRedirectUrl = (url: string): boolean => {
@@ -10,6 +15,24 @@ export const OrgSelectionView = ({
 }: {
   redirectUrl?: string;
 }) => {
+  const metrics: Array<[LucideIcon, string, string]> = [
+    [
+      Building2Icon,
+      "Multi-org friendly",
+      "Switch cleanly between workspaces without visual clutter.",
+    ],
+    [
+      Users2Icon,
+      "Team-aware",
+      "Land in the right support environment before you start.",
+    ],
+    [
+      SparklesIcon,
+      "Consistent UX",
+      "The same polished control center follows each org.",
+    ],
+  ];
+
   const safeRedirectUrl = isValidRedirectUrl(redirectUrl) ? redirectUrl : "/";
   const completionUrl = `/org-selection/complete?redirectUrl=${encodeURIComponent(safeRedirectUrl)}`;
 
@@ -29,23 +52,7 @@ export const OrgSelectionView = ({
             </p>
           </div>
           <div className="grid gap-4">
-            {[
-              [
-                Building2Icon,
-                "Multi-org friendly",
-                "Switch cleanly between workspaces without visual clutter.",
-              ],
-              [
-                Users2Icon,
-                "Team-aware",
-                "Land in the right support environment before you start.",
-              ],
-              [
-                SparklesIcon,
-                "Consistent UX",
-                "The same polished control center follows each org.",
-              ],
-            ].map(([Icon, title, copy]) => (
+            {metrics.map(([Icon, title, copy]) => (
               <div key={title} className="metric-card p-4">
                 <Icon className="size-4 text-primary" />
                 <p className="mt-3 text-sm font-semibold">{title}</p>

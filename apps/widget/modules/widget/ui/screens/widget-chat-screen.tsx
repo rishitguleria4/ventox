@@ -35,7 +35,7 @@ import { cn } from "@workspace/ui/lib/utils";
 import { useAction, useQuery } from "convex/react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { ArrowLeftIcon, Wand2Icon } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 
@@ -114,6 +114,46 @@ export const WidgetChatScreen = () => {
   });
 
   const createMessage = useAction(api.public.messages.create);
+  const enhanceDraft = useAction(api.public.messages.enhanceDraft);
+  const [isEnhancingDraft, setIsEnhancingDraft] = useState(false);
+
+  const onEnhance = async () => {
+    if (!conversation || !contactSessionId) {
+      return;
+    }
+
+    const currentMessage = form.getValues("message").trim();
+
+    if (!currentMessage) {
+      form.setError("message", {
+        message: "Write a message first, then enhance it.",
+      });
+      return;
+    }
+
+    setIsEnhancingDraft(true);
+
+    try {
+      const result = await enhanceDraft({
+        threadId: conversation.threadId,
+        draft: currentMessage,
+        contactSessionId,
+      });
+
+      form.setValue("message", result.text, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      form.clearErrors("message");
+    } catch {
+      form.setError("message", {
+        message: "Unable to enhance your message right now.",
+      });
+    } finally {
+      setIsEnhancingDraft(false);
+    }
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!conversation || !contactSessionId) {
       return;
@@ -189,7 +229,7 @@ export const WidgetChatScreen = () => {
                   }
 
                   const text =
-                    extractText(message) ?? "Unsupported message format";
+                    extractText(message) ?? "Loading....";
                   const assistantLabel =
                     message.role === "assistant"
                       ? getAssistantDisplayName(item.agentName)
@@ -282,17 +322,24 @@ export const WidgetChatScreen = () => {
                       </Badge>
                       <button
                         type="button"
+                        onClick={onEnhance}
+                        disabled={
+                          conversation?.status === "resolved" ||
+                          form.formState.isSubmitting ||
+                          isEnhancingDraft
+                        }
                         className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-full bg-indigo-500/10 px-3 py-1 text-[11px] font-medium text-indigo-600 transition-all duration-300 hover:bg-indigo-500/20 hover:text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300 dark:hover:bg-indigo-500/25 active:scale-95"
                       >
                         <Wand2Icon className="size-3" />
-                        Enhance
+                        {isEnhancingDraft ? "Enhancing..." : "Enhance"}
                       </button>
                     </AIInputTools>
                     <AIInputSubmit
                       disabled={
                         conversation?.status === "resolved" ||
                         !form.formState.isValid ||
-                        form.formState.isSubmitting
+                        form.formState.isSubmitting ||
+                        isEnhancingDraft
                       }
                       size="default"
                       status={

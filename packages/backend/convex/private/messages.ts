@@ -2,8 +2,11 @@ import { listMessages, saveMessage, syncStreams } from "@convex-dev/agent";
 import { vStreamArgs } from "@convex-dev/agent/validators";
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "../_generated/server";
-import { components } from "../_generated/api";
+import { action, mutation, query } from "../_generated/server";
+import { api, components } from "../_generated/api";
+import { enhanceSupportDraftText } from "../system/ai/services/enhanceText";
+
+
 
 const getHumanSupportName = (identity: Record<string, unknown>) => {
   const candidates = [
@@ -150,5 +153,39 @@ export const create = mutation({
       agentName: handlerName,
       status: "escalated" as const,
     };
+  },
+});
+
+export const enhanceDraft = action({
+  args: {
+    conversationId: v.id("conversations"),
+    draft: v.string(),
+  },
+
+  handler: async (ctx, args) => {
+    const currentConversation = await ctx.runQuery(
+      api.private.conversations.getOne,
+      {
+        conversationId: args.conversationId,
+      },
+    );
+
+    if (!currentConversation) {
+      throw new ConvexError({
+        code: "NOT_FOUND",
+        message: "Conversation not found",
+      });
+    }
+
+    const draft = args.draft.trim();
+
+    if (!draft) {
+      throw new ConvexError({
+        code: "EMPTY_MESSAGE",
+        message: "Message cannot be empty",
+      });
+    }
+
+    return await enhanceSupportDraftText(draft);
   },
 });
