@@ -224,6 +224,13 @@ export const enhanceDraft = action({
       });
     }
 
+    if (!hasConfiguredAiProvider()) {
+      throw new ConvexError({
+        code: "AI_UNAVAILABLE",
+        message: "AI enhancement is not available in this environment",
+      });
+    }
+
     return await enhanceSupportDraftText(draft);
   },
 });

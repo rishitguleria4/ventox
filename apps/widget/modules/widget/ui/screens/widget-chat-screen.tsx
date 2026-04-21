@@ -229,7 +229,7 @@ export const WidgetChatScreen = () => {
                   }
 
                   const text =
-                    extractText(message) ?? "Loading....";
+                    extractText(message) ?? "Unsupported message format";
                   const assistantLabel =
                     message.role === "assistant"
                       ? getAssistantDisplayName(item.agentName)

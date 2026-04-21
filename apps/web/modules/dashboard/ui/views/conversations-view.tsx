@@ -617,7 +617,7 @@ export const ConversationsView = () => {
                                   ) : null}
                                   <AIResponse className="text-[15px] leading-7">
                                     {getMessageText(message) ??
-                                      "loading..."}
+                                      "Message unavailable"}
                                   </AIResponse>
                                 </AIMessageContent>
                               </AIMessage>
