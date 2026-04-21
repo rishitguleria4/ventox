@@ -4,6 +4,7 @@ import { ConvexError } from "convex/values";
 import { contentHashFromArrayBuffer, guessMimeTypeFromContents, guessMimeTypeFromExtension} from "@convex-dev/rag";
 import { extractTextContent } from "../lib/extractTextContent";
 import rag from "../system/ai/rag";
+import { Id } from "../_generated/dataModel";
 
 /**
  * Guesses the MIME type of a file based on its extension or contents.
@@ -29,7 +30,6 @@ function guessMimeType(filename : string  ,bytes : ArrayBuffer): string {
 export const deleteFile = mutation({
     args:{
         entryId:v.id("rag_entries"),
-        storageId:v.id("_storage"),
     },
     handler:async (ctx,args)=>{
         const identity = await ctx.auth.getUserIdentity();
@@ -67,16 +67,16 @@ export const deleteFile = mutation({
         }
 
         // Proper checking: Ensure the entry actually belongs to this org
-        if( entry.metadata?.uploadedby !== orgId)
+        if( entry.metadata?.uploadedBy !== orgId)
         {
             throw new ConvexError({
-                code : "UNAUTHORISED",
+                code : "UNAUTHORIZED",
                 message : "Unauthorized",
             });
         }
         if (entry.metadata?.storageId )
         {
-            await ctx.storage.delete(entry.metadata.storageId as any);
+            await ctx.storage.delete(entry.metadata.storageId as Id<"_storage">);
         }
         await rag.deleteAsync(ctx,{
             entryId,
@@ -97,7 +97,7 @@ export const deleteFile = mutation({
 export const  addFile = action ({
     args:{
         filename : v.string(),
-        mimetype : v.string(),
+        mimetype : v.optional(v.string()),
         bytes : v.bytes(),
         category:v.optional(v.string()),
     },
@@ -132,13 +132,15 @@ export const  addFile = action ({
         });
 
         const {entryId , created} = await rag.add(ctx , {
-            namespace : orgId ,//this is super important to maintain privacy of users through this nobidy can access others namespace , if didn,t implemented it will be gloabl which is dangerous
+            // Scope the entry to the current organization to preserve tenant privacy.
+            // Without this namespace, files could be added to a global space and become accessible across organizations.
+            namespace : orgId,
             text ,
             key : filename ,
             title :  filename ,
             metadata : {
                 storageId,
-                uploadedby : orgId , // IMP FOR DELETION AND VERIFICATION
+                uploadedBy : orgId , // IMP FOR DELETION AND VERIFICATION
                 filename ,
                 category : category || "null",
             },
@@ -150,9 +152,11 @@ export const  addFile = action ({
             await ctx.storage.delete(storageId);
         }
 
+        const url = created ? await ctx.storage.getUrl(storageId) : null;
         return {
-            url : await ctx.storage.getUrl(storageId),
-            entryId ,
+            url,
+            entryId,
+            created,
         }
     }, 
 })

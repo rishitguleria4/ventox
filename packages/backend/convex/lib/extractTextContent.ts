@@ -6,9 +6,9 @@ import { assert } from "convex-helpers";
 import { Id } from "../_generated/dataModel";
 
 const AI_MODELS = {
-    image : google.chat("gemini-2.0-flash"),
-    pdf : google.chat("gemini-2.0-flash"),
-    html :google.chat ("gemini-2.0-flash"), 
+    image : google("gemini-2.0-flash"),
+    pdf : google("gemini-2.0-flash"),
+    html :google("gemini-2.0-flash"), 
 } as const ;
 
 const SUPPORTED_IMAGE_TYPES = [
@@ -24,7 +24,7 @@ const SYSTEM_PROMPTS = {
     html : "extract text from html ",
 };
 
-export type ExtractTexTContentArgs ={
+export type ExtractTextContentArgs ={
     storageId:Id<"_storage">;
     bytes?: ArrayBuffer;
     filename: string;
@@ -40,18 +40,20 @@ export type ExtractTexTContentArgs ={
  */
 export  async function extractTextContent(
     ctx : { storage : StorageActionWriter},
-    args : ExtractTexTContentArgs,
+    args : ExtractTextContentArgs,
 ):Promise<string>{
     const { storageId , filename , bytes , mimetype }= args;
     const url = await ctx.storage.getUrl(storageId);
     assert(url, "url is required");
-    if ( SUPPORTED_IMAGE_TYPES.some((type)=>type === mimetype)){
+    
+    const mt = mimetype.toLowerCase();
+    if ( SUPPORTED_IMAGE_TYPES.some((type)=>type === mt)){
         return await extractImageText(url);
     }
-    if ( mimetype.toLowerCase().includes("pdf")){
+    if ( mt === "application/pdf"){
         return extractPdfText(url, mimetype , filename);
     }
-    if ( mimetype.toLowerCase().includes("text")){
+    if ( mt.startsWith("text/")){
         return extractTextFileContent( ctx , storageId , filename , bytes , mimetype);
     }
     throw new Error (`unsupported mime type : ${mimetype}`);
@@ -80,7 +82,7 @@ async function extractTextFileContent(
     }
 
     const text = new TextDecoder().decode(arrayBuffer);
-    if (mimeType.toLowerCase() !== "text/plain")
+    if (mimeType.toLowerCase() === "text/html")
     {
         const result = await generateText({
             model : AI_MODELS.html,
@@ -90,10 +92,6 @@ async function extractTextFileContent(
                     role : "user",
                     content : [
                         {type : "text" , text },
-                        {
-                            type : "text",
-                            text : ` ${SYSTEM_PROMPTS.html}\n\n Transcribe the text exactly . do not add any explanation or preamble . `
-                        }
                     ],
                 },
             ],
@@ -101,7 +99,7 @@ async function extractTextFileContent(
         return result.text;
     }
     return text;
-} 
+}
 
 /**
  * Extracts text from a PDF file using a generative AI model.
@@ -118,7 +116,7 @@ async function extractPdfText(url :string , mimetype : string , filename : strin
             {
                 role : "user",
                 content : [
-                    {type : "file" , data : new URL(url), filename:filename, mediaType:mimetype },
+                    {type : "file" , data : new URL(url), filename:filename, mimeType:mimetype },
                     {
                         type : "text",
                         text : ` ${SYSTEM_PROMPTS.pdf}\n\n Transcribe the text exactly . do not add any explanation or preamble . `
