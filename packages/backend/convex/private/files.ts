@@ -5,6 +5,13 @@ import { contentHashFromArrayBuffer, guessMimeTypeFromContents, guessMimeTypeFro
 import { extractTextContent } from "../lib/extractTextContent";
 import rag from "../system/ai/rag";
 
+/**
+ * Guesses the MIME type of a file based on its extension or contents.
+ * Falls back to 'application/octet-stream' if unknown.
+ * @param filename - The name of the file.
+ * @param bytes - The file contents as an ArrayBuffer.
+ * @returns The guessed MIME type.
+ */
 function guessMimeType(filename : string  ,bytes : ArrayBuffer): string {
     return (
         guessMimeTypeFromExtension(filename) ||
@@ -13,6 +20,12 @@ function guessMimeType(filename : string  ,bytes : ArrayBuffer): string {
     )
 };
 
+/**
+ * Mutation to delete a file from both RAG storage and Convex storage.
+ * Ensures that the user deleting the file is the organization that uploaded it.
+ * @param entryId - The RAG entry ID to delete.
+ * @param storageId - The Convex storage ID to delete.
+ */
 export const deleteFile = mutation({
     args:{
         entryId:v.id("rag_entries"),
@@ -71,6 +84,16 @@ export const deleteFile = mutation({
     }
 })
 
+/**
+ * Action to add a file to Convex storage and index it in the RAG system.
+ * Extracts text from the file before indexing.
+ * Ensures the file is stored under the user's organization namespace for privacy.
+ * @param filename - The name of the file.
+ * @param mimetype - The MIME type of the file.
+ * @param bytes - The file contents as an ArrayBuffer.
+ * @param category - Optional category for the file.
+ * @returns An object containing the public URL and the new RAG entry ID.
+ */
 export const  addFile = action ({
     args:{
         filename : v.string(),

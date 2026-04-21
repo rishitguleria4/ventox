@@ -31,6 +31,13 @@ export type ExtractTexTContentArgs ={
     mimetype: string;
 };
 
+/**
+ * Extracts text content from a stored file based on its MIME type.
+ * Supports images, PDFs, and plain/HTML text.
+ * @param ctx - The Convex context containing the storage writer.
+ * @param args - Arguments containing the storage ID, filename, and MIME type.
+ * @returns A promise that resolves to the extracted text.
+ */
 export  async function extractTextContent(
     ctx : { storage : StorageActionWriter},
     args : ExtractTexTContentArgs,
@@ -50,6 +57,16 @@ export  async function extractTextContent(
     throw new Error (`unsupported mime type : ${mimetype}`);
 }
 
+/**
+ * Extracts and transcribes text from text-based files like plain text or HTML.
+ * Uses an AI model to transcribe non-plain text exactly.
+ * @param ctx - The Convex context containing the storage writer.
+ * @param storageId - The Convex storage ID of the file.
+ * @param filename - The name of the file.
+ * @param bytes - Optional array buffer of the file contents.
+ * @param mimeType - The MIME type of the file.
+ * @returns A promise that resolves to the extracted text.
+ */
 async function extractTextFileContent(
     ctx : { storage : StorageActionWriter},
     storageId:Id<"_storage">,
@@ -86,6 +103,13 @@ async function extractTextFileContent(
     return text;
 } 
 
+/**
+ * Extracts text from a PDF file using a generative AI model.
+ * @param url - The URL to the stored PDF file.
+ * @param mimetype - The MIME type of the file (usually application/pdf).
+ * @param filename - The name of the PDF file.
+ * @returns A promise that resolves to the transcribed text.
+ */
 async function extractPdfText(url :string , mimetype : string , filename : string) : Promise<string> {
     const result = await generateText({
         model : AI_MODELS.pdf,
@@ -106,6 +130,11 @@ async function extractPdfText(url :string , mimetype : string , filename : strin
     return result.text;
 }
 
+/**
+ * Extracts text from an image file using a generative AI model.
+ * @param url - The URL to the stored image.
+ * @returns A promise that resolves to the transcribed text or image description.
+ */
 async function extractImageText(url : string) : Promise<string>{
     const result =  await  generateText({
         model : AI_MODELS.image,
