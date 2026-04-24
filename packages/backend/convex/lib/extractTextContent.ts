@@ -116,7 +116,7 @@ async function extractPdfText(url :string , mimetype : string , filename : strin
             {
                 role : "user",
                 content : [
-                    {type : "file" , data : new URL(url), filename:filename, mimeType:mimetype },
+                    {type : "file" , data : new URL(url), filename:filename, mediaType:mimetype },
                     {
                         type : "text",
                         text : ` ${SYSTEM_PROMPTS.pdf}\n\n Transcribe the text exactly . do not add any explanation or preamble . `
