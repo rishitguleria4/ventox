@@ -4,7 +4,7 @@ import { glass } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 import { useMemo } from "react";
 import { Avatar, AvatarImage } from "@workspace/ui/components/avatar";
-import { cn } from "../lib/utils.js";
+import { cn } from "../lib/utils";
 
 interface DicebearAvatarProps{
     seed : string;
