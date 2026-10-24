@@ -23,7 +23,7 @@ export const WidgetFooter = () => {
   const setScreen = useSetAtom(screenAtom);
 
   return (
-    <footer className="border-t border-white/14 bg-slate-950/90 px-4 py-3 text-slate-200 backdrop-blur-xl">
+    <footer className="shrink-0 border-t border-white/14 bg-slate-950/90 px-4 py-2 text-slate-200 backdrop-blur-xl">
       <div className="mx-auto grid max-w-sm grid-cols-2 gap-2">
         {tabs.map((tab) => {
           const active = screen === tab.key;
@@ -32,15 +32,15 @@ export const WidgetFooter = () => {
             <Button
               key={tab.key}
               className={cn(
-                "h-11 rounded-[1rem] border border-transparent text-slate-200 transition-all duration-200",
+                "h-9 rounded-[0.85rem] border border-transparent text-xs text-slate-200 transition-all duration-200",
                 active
-                  ? "bg-gradient-to-r from-primary via-blue-500 to-cyan-400 text-white shadow-[0_24px_48px_-30px_rgba(59,130,246,0.6)]"
+                  ? "bg-gradient-to-r from-primary via-blue-500 to-cyan-400 text-white shadow-[0_20px_40px_-28px_rgba(59,130,246,0.6)]"
                   : "bg-white/6 hover:bg-white/10",
               )}
               onClick={() => setScreen(tab.key)}
               variant="ghost"
             >
-              <tab.icon className="size-4" />
+              <tab.icon className="size-3.5" />
               {tab.label}
             </Button>
           );

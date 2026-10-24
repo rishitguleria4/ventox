@@ -63,30 +63,30 @@ export const WidgetSelectionScreen = () => {
   return (
     <>
       <WidgetHeader>
-        <div className="space-y-3">
-          <p className="text-3xl font-semibold tracking-tight">
+        <div className="space-y-1">
+          <p className="text-xl font-semibold tracking-tight">
             Ventox Support
           </p>
-          <p className="max-w-sm text-sm leading-6 text-white/88">
+          <p className="max-w-sm text-xs leading-5 text-white/85">
             Initiate a secure conversation with our dedicated support team.
           </p>
         </div>
       </WidgetHeader>
 
-      <div className="widget-main gap-4 px-4 py-4 min-h-0 overflow-y-auto">
+      <div className="widget-main min-h-0 gap-3 overflow-y-auto px-4 py-3.5">
         <div className="widget-card">
           <div className="widget-pill w-fit bg-primary/18 text-primary-foreground">
             New conversation
           </div>
-          <h2 className="mt-4 text-xl font-semibold">
+          <h2 className="mt-3 text-lg font-semibold">
             Connect with Support
           </h2>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          <p className="mt-1.5 text-sm leading-5 text-muted-foreground">
             Our intelligent agents provide immediate resolution, with seamless
             escalation to our support specialists for complex inquiries.
           </p>
           <Button
-            className="mt-5 h-12 w-full justify-between rounded-[1.15rem] px-4"
+            className="mt-4 h-11 w-full justify-between rounded-[1rem] px-4"
             disabled={isPending}
             onClick={handleNewConversation}
             size="lg"
@@ -99,15 +99,15 @@ export const WidgetSelectionScreen = () => {
           </Button>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid gap-2.5">
           {[
             "Instant issue resolution.",
             "Seamless escalation to support specialists.",
             "Secure, persistent session management.",
           ].map((item) => (
-            <div key={item} className="widget-soft-card flex items-start gap-3">
+            <div key={item} className="widget-soft-card flex items-start gap-3 py-3">
               <SparklesIcon className="mt-0.5 size-4 text-primary" />
-              <p className="text-sm leading-6 text-foreground/88">{item}</p>
+              <p className="text-sm leading-5 text-foreground/88">{item}</p>
             </div>
           ))}
         </div>

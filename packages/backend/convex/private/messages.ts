@@ -4,9 +4,8 @@ import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
 import { action, mutation, query } from "../_generated/server";
 import { api, components } from "../_generated/api";
+import { rateLimiter } from "../lib/rateLimiter";
 import { enhanceSupportDraftText } from "../system/ai/services/enhanceText";
-
-
 
 const getHumanSupportName = (identity: Record<string, unknown>) => {
   const candidates = [
@@ -185,6 +184,11 @@ export const enhanceDraft = action({
         message: "Message cannot be empty",
       });
     }
+
+    await rateLimiter.limit(ctx, "enhanceDraft", {
+      key: currentConversation.organizationId,
+      throws: true,
+    });
 
     return await enhanceSupportDraftText(draft);
   },

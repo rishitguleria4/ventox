@@ -84,7 +84,7 @@ export const getOne = query({
     if(conversation.contactSessionId != session._id)
     {
       throw new ConvexError({
-        code : "NOT FOUND",
+        code : "NOT_FOUND",
         message : "CONVERSATION NOT FOUND",
       });
     }

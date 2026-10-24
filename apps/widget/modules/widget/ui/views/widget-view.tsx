@@ -28,18 +28,24 @@ export const WidgetView = ({ organizationId }: Props) => {
     api.public.contactSessions.validate,
   );
   const organizationIdValue = useAtomValue(organizationIdAtom);
+  const effectiveOrgId = organizationIdValue || organizationId || "";
+
   const contactSessionId = useAtomValue(
-    contactSessionIdAtomFamily(organizationIdValue || ""),
+    contactSessionIdAtomFamily(effectiveOrgId),
   );
   const setContactSessionId = useSetAtom(
-    contactSessionIdAtomFamily(organizationIdValue || ""),
+    contactSessionIdAtomFamily(effectiveOrgId),
   );
+  const setOrganizationId = useSetAtom(organizationIdAtom);
   const setScreen = useSetAtom(screenAtom);
   const screen = useAtomValue(screenAtom);
 
   useEffect(() => {
+    if (organizationId) {
+      setOrganizationId(organizationId);
+    }
     setScreen("loading");
-  }, [organizationId, setScreen]);
+  }, [organizationId, setOrganizationId, setScreen]);
 
   useEffect(() => {
     const protectedScreens = new Set([
@@ -53,7 +59,7 @@ export const WidgetView = ({ organizationId }: Props) => {
       return;
     }
 
-    if (!organizationIdValue || !contactSessionId) {
+    if (!effectiveOrgId || !contactSessionId) {
       setScreen("auth");
       return;
     }
@@ -101,7 +107,7 @@ export const WidgetView = ({ organizationId }: Props) => {
     };
   }, [
     contactSessionId,
-    organizationIdValue,
+    effectiveOrgId,
     screen,
     setContactSessionId,
     setScreen,

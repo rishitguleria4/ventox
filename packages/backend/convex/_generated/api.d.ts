@@ -23,7 +23,6 @@ import type * as system_ai_tools_escalateconversation from "../system/ai/tools/e
 import type * as system_ai_tools_resolveconversation from "../system/ai/tools/resolveconversation.js";
 import type * as system_contactSessions from "../system/contactSessions.js";
 import type * as system_conversations from "../system/conversations.js";
-import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -47,7 +46,6 @@ declare const fullApi: ApiFromModules<{
   "system/ai/tools/resolveconversation": typeof system_ai_tools_resolveconversation;
   "system/contactSessions": typeof system_contactSessions;
   "system/conversations": typeof system_conversations;
-  users: typeof users;
 }>;
 
 /**

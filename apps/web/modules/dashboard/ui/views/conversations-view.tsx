@@ -421,76 +421,69 @@ export const ConversationsView = () => {
       : orderedMessages.length + " messages loaded";
 
   return (
-    <div className="flex h-full min-h-0 flex-col px-3 py-3 md:px-5 md:py-5 xl:px-6 xl:py-6">
-      <div className="grid h-full min-h-0 gap-5 xl:grid-cols-[minmax(320px,360px)_minmax(0,1fr)]">
-        <div className="glass-panel min-h-[360px] overflow-hidden py-0 xl:min-h-0">
+    <div className="flex h-full min-h-0 flex-col px-3 py-3 md:px-4 md:py-4">
+      <div className="grid h-full min-h-0 gap-4 xl:grid-cols-[minmax(300px,340px)_minmax(0,1fr)]">
+        <div className="glass-panel min-h-[320px] overflow-hidden py-0 xl:min-h-0">
           <ConversationPanel />
         </div>
 
-        <div className="flex min-h-0 flex-col gap-5">
+        <div className="flex min-h-0 flex-col gap-3.5">
           {conversation ? (
             <>
               {escalationNotification ? (
-                <section className="rounded-[1.25rem] border border-emerald-500/30 bg-emerald-500/12 px-4 py-3 text-sm text-emerald-950 shadow-[0_20px_44px_-32px_rgba(16,185,129,0.5)] dark:text-emerald-100">
-                  <div className="flex items-start gap-2.5">
-                    <TriangleAlertIcon className="mt-0.5 size-4" />
+                <section className="shrink-0 rounded-xl border border-emerald-500/30 bg-emerald-500/12 px-3.5 py-2 text-xs text-emerald-950 shadow-sm dark:text-emerald-100">
+                  <div className="flex items-center gap-2">
+                    <TriangleAlertIcon className="size-3.5 shrink-0" />
                     <p>{escalationNotification}</p>
                   </div>
                 </section>
               ) : null}
 
-              <section className="glass-panel relative overflow-hidden p-5 md:p-6">
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-r from-primary/12 via-sky-500/8 to-emerald-400/10" />
-                <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap items-center gap-3">
+              <section className="glass-panel relative shrink-0 overflow-hidden px-4 py-3.5 md:px-5">
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-r from-primary/12 via-sky-500/8 to-emerald-400/10" />
+                <div className="relative flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <h1 className="text-lg font-semibold tracking-tight md:text-xl">
+                        {conversation.contactSession.name}
+                      </h1>
                       <ConversationStatusIcon status={conversation.status} />
                       <Badge
                         variant="secondary"
-                        className="rounded-full px-3 py-1 capitalize"
+                        className="rounded-full px-2.5 py-0.5 text-xs capitalize"
                       >
                         {conversation.status}
                       </Badge>
-                      <div className="rounded-full border border-white/65 bg-white/72 px-3 py-1 text-xs font-medium text-muted-foreground shadow-[0_18px_40px_-34px_rgba(15,23,42,0.4)] dark:border-white/10 dark:bg-white/6">
+                      <div className="rounded-full border border-white/65 bg-white/72 px-2.5 py-0.5 text-xs font-medium text-muted-foreground dark:border-white/10 dark:bg-white/6">
                         {messageCountLabel}
                       </div>
                     </div>
 
-                    <div>
-                      <p className="page-eyebrow">Customer Support Workspace</p>
-                      <h1 className="page-title mt-2 text-2xl md:text-4xl">
-                        {conversation.contactSession.name}
-                      </h1>
-                      <p className="page-subtitle mt-3 max-w-3xl leading-7">
-                        Review the full transcript, customer details, and live
-                        support status from one polished workspace.
-                      </p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2.5 text-sm">
-                      <div className="rounded-full border border-white/65 bg-white/72 px-3.5 py-2 text-foreground shadow-[0_16px_38px_-32px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
-                        <span className="mr-2" aria-hidden="true">
+                    <div className="flex flex-wrap gap-2 text-xs">
+                      <div className="rounded-full border border-white/65 bg-white/72 px-2.5 py-1 text-foreground dark:border-white/10 dark:bg-white/6">
+                        <span className="mr-1.5" aria-hidden="true">
                           {country.flag}
                         </span>
                         {country.name}
                       </div>
-                      <div className="rounded-full border border-white/65 bg-white/72 px-3.5 py-2 text-foreground shadow-[0_16px_38px_-32px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
+                      <div className="rounded-full border border-white/65 bg-white/72 px-2.5 py-1 text-foreground dark:border-white/10 dark:bg-white/6">
                         {conversation.contactSession.email}
                       </div>
-                      <div className="rounded-full border border-white/65 bg-white/72 px-3.5 py-2 text-foreground shadow-[0_16px_38px_-32px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
+                      <div className="rounded-full border border-white/65 bg-white/72 px-2.5 py-1 text-muted-foreground dark:border-white/10 dark:bg-white/6">
                         Created {formatTimestamp(conversation._creationTime)}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 rounded-[1.45rem] border border-white/60 bg-white/58 p-2 shadow-[0_28px_64px_-46px_rgba(15,23,42,0.5)] backdrop-blur-sm dark:border-white/10 dark:bg-white/6">
+                  <div className="flex flex-wrap gap-1.5 rounded-2xl border border-white/60 bg-white/58 p-1.5 backdrop-blur-sm dark:border-white/10 dark:bg-white/6">
                     {statusOptions.map((statusOption) => (
                       <Button
                         key={statusOption.value}
+                        size="sm"
                         className={cn(
-                          "min-w-[132px] justify-center rounded-[1.15rem] px-4 shadow-none",
+                          "h-8 justify-center rounded-xl px-3 text-xs shadow-none",
                           conversation.status === statusOption.value &&
-                            "shadow-[0_20px_38px_-24px_rgba(15,23,42,0.4)]",
+                            "shadow-sm",
                         )}
                         disabled={
                           isUpdatingStatus ||
@@ -504,11 +497,11 @@ export const ConversationsView = () => {
                         }
                       >
                         {statusOption.value === "resolved" ? (
-                          <CheckIcon className="size-4" />
+                          <CheckIcon className="size-3.5" />
                         ) : statusOption.value === "escalated" ? (
-                          <TriangleAlertIcon className="size-4" />
+                          <TriangleAlertIcon className="size-3.5" />
                         ) : (
-                          <RefreshCwIcon className="size-4" />
+                          <RefreshCwIcon className="size-3.5" />
                         )}
                         {statusOption.label}
                       </Button>
@@ -517,27 +510,25 @@ export const ConversationsView = () => {
                 </div>
               </section>
 
-              <div className="grid h-full min-h-0 gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+              <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-[minmax(0,1fr)_310px]">
                 <Card className="glass-panel flex min-h-0 flex-col overflow-hidden py-0">
-                  <CardHeader className="border-b border-border/60 px-5 py-5 md:px-6">
-                    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                  <CardHeader className="shrink-0 border-b border-border/60 px-4 py-3 md:px-5">
+                    <div className="flex items-center justify-between gap-3">
                       <div>
-                        <p className="page-eyebrow">Live Transcript</p>
-                        <CardTitle className="mt-2 text-xl">
-                          Transcript
+                        <CardTitle className="text-base">
+                          Live Transcript
                         </CardTitle>
-                        <CardDescription className="mt-2 max-w-2xl leading-6">
-                          Messages now follow natural chat order, with the
-                          newest reply staying at the bottom where support teams
-                          expect it.
+                        <CardDescription className="text-xs">
+                          Real-time conversation history with customer and AI
+                          support.
                         </CardDescription>
                       </div>
 
-                      <div className="rounded-[1.2rem] border border-white/65 bg-white/72 px-4 py-3 text-right shadow-[0_20px_45px_-38px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
-                        <p className="text-[10px] font-semibold tracking-[0.22em] text-muted-foreground uppercase">
-                          Loaded
+                      <div className="rounded-xl border border-white/65 bg-white/72 px-3 py-1.5 text-right dark:border-white/10 dark:bg-white/6">
+                        <p className="text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+                          Messages
                         </p>
-                        <p className="mt-1 text-lg font-semibold">
+                        <p className="text-sm font-semibold">
                           {orderedMessages.length}
                         </p>
                       </div>
@@ -552,7 +543,7 @@ export const ConversationsView = () => {
                           canLoadMore={canLoadMore}
                           isLoading={isLoading}
                           onLoadMore={handleLoadMore}
-                          className="px-4 pt-4 md:px-6 md:pt-5"
+                          className="px-4 pt-3 md:px-5"
                           noMoreText={
                             orderedMessages.length > 0
                               ? "Start of conversation"
@@ -560,9 +551,9 @@ export const ConversationsView = () => {
                           }
                         />
 
-                        <div className="flex flex-1 flex-col justify-end gap-3 px-4 pb-5 md:px-6 md:pb-6">
+                        <div className="flex flex-1 flex-col justify-end gap-2.5 px-4 pb-4 md:px-5">
                           {orderedMessages.length === 0 ? (
-                            <div className="flex min-h-56 items-center justify-center rounded-[1.6rem] border border-dashed border-border/70 bg-background/40 px-4 text-center text-sm text-muted-foreground">
+                            <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-border/70 bg-background/40 px-4 text-center text-sm text-muted-foreground">
                               No messages have been saved for this thread yet.
                             </div>
                           ) : null}
@@ -615,7 +606,7 @@ export const ConversationsView = () => {
                                       {assistantLabel}
                                     </p>
                                   ) : null}
-                                  <AIResponse className="text-[15px] leading-7">
+                                  <AIResponse className="text-sm leading-6">
                                     {getMessageText(message) ??
                                       "Message unavailable"}
                                   </AIResponse>
@@ -628,10 +619,10 @@ export const ConversationsView = () => {
                       <AIConversationScrollButton />
                     </AIConversations>
 
-                    <div className="border-t border-border/60 bg-gradient-to-b from-white/20 to-white/5 p-4 md:p-5">
+                    <div className="shrink-0 border-t border-border/60 bg-gradient-to-b from-white/20 to-white/5 p-3 md:px-4 md:py-3">
                       <div
                         className={cn(
-                          "mb-4 rounded-[1.35rem] border px-4 py-3.5 text-sm leading-6 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)]",
+                          "mb-2.5 rounded-xl border px-3 py-1.5 text-xs leading-5",
                           conversation.status === "resolved"
                             ? "border-border/70 bg-background/60 text-muted-foreground"
                             : conversation.status === "escalated"
@@ -679,16 +670,16 @@ export const ConversationsView = () => {
                                   }
                                   value={field.value}
                                 />
-                                <AIInputToolbar className="gap-3">
+                                <AIInputToolbar className="gap-2">
                                   <AIInputTools className="gap-2">
                                     <Badge
                                       variant="outline"
-                                      className="rounded-full border-border/70 px-3 py-1 text-[10px] tracking-[0.18em] uppercase"
+                                      className="rounded-full border-border/70 px-2.5 py-0.5 text-[10px] tracking-[0.16em] uppercase"
                                     >
                                       Human Reply
                                     </Badge>
                                     <Button
-                                      className="h-7 gap-1.5 rounded-full border border-indigo-500/20 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-3.5 text-xs font-semibold tracking-wide text-indigo-700 shadow-sm transition-all hover:bg-gradient-to-r hover:from-indigo-500/20 hover:to-purple-500/20 hover:text-indigo-800 dark:border-indigo-400/20 dark:text-indigo-300 dark:hover:text-indigo-200"
+                                      className="h-7 gap-1.5 rounded-full border border-indigo-500/20 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-3 text-xs font-semibold tracking-wide text-indigo-700 shadow-sm transition-all hover:bg-gradient-to-r hover:from-indigo-500/20 hover:to-purple-500/20 hover:text-indigo-800 dark:border-indigo-400/20 dark:text-indigo-300 dark:hover:text-indigo-200"
                                       type="button"
                                       variant="ghost"
                                       onClick={handleEnhanceReply}
@@ -708,7 +699,7 @@ export const ConversationsView = () => {
                                     Press Enter to send
                                   </span>
                                   <AIInputSubmit
-                                    className="min-w-[92px]"
+                                    className="min-w-[84px]"
                                     disabled={
                                       conversation.status === "resolved" ||
                                       !replyForm.formState.isValid ||
@@ -725,7 +716,7 @@ export const ConversationsView = () => {
                                   </AIInputSubmit>
                                 </AIInputToolbar>
                                 {fieldState.error?.message ? (
-                                  <p className="px-4 pb-4 text-sm text-destructive">
+                                  <p className="px-3.5 pb-2 text-xs text-destructive">
                                     {fieldState.error.message}
                                   </p>
                                 ) : null}
@@ -738,45 +729,45 @@ export const ConversationsView = () => {
                   </CardContent>
                 </Card>
 
-                <div className="flex min-h-0 flex-col gap-5">
+                <div className="flex min-h-0 flex-col gap-4 overflow-y-auto">
                   <Card className="glass-panel py-0">
-                    <CardHeader className="border-b border-border/60 px-5 py-5">
-                      <CardTitle>Contact</CardTitle>
-                      <CardDescription>
-                        The core customer details attached to this thread.
+                    <CardHeader className="border-b border-border/60 px-4 py-3.5">
+                      <CardTitle className="text-base">Contact</CardTitle>
+                      <CardDescription className="text-xs">
+                        Core customer details attached to this thread.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-3 p-5">
-                      <div className="rounded-[1.3rem] border border-white/60 bg-white/62 p-4 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
-                        <div className="flex items-start gap-3">
+                    <CardContent className="space-y-2.5 p-4">
+                      <div className="rounded-xl border border-white/60 bg-white/62 p-3 dark:border-white/10 dark:bg-white/6">
+                        <div className="flex items-start gap-2.5">
                           <User2Icon className="mt-0.5 size-4 text-primary" />
                           <div>
                             <p className="text-sm font-medium">
                               {conversation.contactSession.name}
                             </p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs text-muted-foreground">
                               Customer name
                             </p>
                           </div>
                         </div>
                       </div>
 
-                      <div className="rounded-[1.3rem] border border-white/60 bg-white/62 p-4 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
-                        <div className="flex items-start gap-3">
+                      <div className="rounded-xl border border-white/60 bg-white/62 p-3 dark:border-white/10 dark:bg-white/6">
+                        <div className="flex items-start gap-2.5">
                           <MailIcon className="mt-0.5 size-4 text-primary" />
                           <div>
                             <p className="break-all text-sm font-medium">
                               {conversation.contactSession.email}
                             </p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs text-muted-foreground">
                               Email address
                             </p>
                           </div>
                         </div>
                       </div>
 
-                      <div className="rounded-[1.3rem] border border-white/60 bg-white/62 p-4 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
-                        <div className="flex items-start gap-3">
+                      <div className="rounded-xl border border-white/60 bg-white/62 p-3 dark:border-white/10 dark:bg-white/6">
+                        <div className="flex items-start gap-2.5">
                           <Globe2Icon className="mt-0.5 size-4 text-primary" />
                           <div>
                             <p className="text-sm font-medium">
@@ -785,21 +776,21 @@ export const ConversationsView = () => {
                               </span>
                               {country.name}
                             </p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs text-muted-foreground">
                               Country
                             </p>
                           </div>
                         </div>
                       </div>
 
-                      <div className="rounded-[1.3rem] border border-white/60 bg-white/62 p-4 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
-                        <div className="flex items-start gap-3">
+                      <div className="rounded-xl border border-white/60 bg-white/62 p-3 dark:border-white/10 dark:bg-white/6">
+                        <div className="flex items-start gap-2.5">
                           <Clock3Icon className="mt-0.5 size-4 text-primary" />
                           <div>
                             <p className="text-sm font-medium">
                               {formatTimestamp(conversation._creationTime)}
                             </p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs text-muted-foreground">
                               Conversation created
                             </p>
                           </div>
@@ -807,8 +798,8 @@ export const ConversationsView = () => {
                       </div>
 
                       {conversation.contactSession.metadata?.viewportSize ? (
-                        <div className="rounded-[1.3rem] border border-white/60 bg-white/62 p-4 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
-                          <div className="flex items-start gap-3">
+                        <div className="rounded-xl border border-white/60 bg-white/62 p-3 dark:border-white/10 dark:bg-white/6">
+                          <div className="flex items-start gap-2.5">
                             <MonitorIcon className="mt-0.5 size-4 text-primary" />
                             <div>
                               <p className="text-sm font-medium">
@@ -817,7 +808,7 @@ export const ConversationsView = () => {
                                     .viewportSize
                                 }
                               </p>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-xs text-muted-foreground">
                                 Viewport
                                 {conversation.contactSession.metadata.platform
                                   ? " on " +
@@ -833,15 +824,14 @@ export const ConversationsView = () => {
                   </Card>
 
                   <Card className="glass-panel py-0">
-                    <CardHeader className="border-b border-border/60 px-5 py-5">
-                      <CardTitle>Session Context</CardTitle>
-                      <CardDescription>
-                        Thread metadata and browsing context for support
-                        debugging.
+                    <CardHeader className="border-b border-border/60 px-4 py-3.5">
+                      <CardTitle className="text-base">Session Context</CardTitle>
+                      <CardDescription className="text-xs">
+                        Thread metadata and browsing context.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-3 p-5 text-sm">
-                      <div className="rounded-[1.3rem] border border-white/60 bg-white/62 p-4 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
+                    <CardContent className="space-y-2.5 p-4 text-xs">
+                      <div className="rounded-xl border border-white/60 bg-white/62 p-3 dark:border-white/10 dark:bg-white/6">
                         <div className="flex items-start justify-between gap-3">
                           <span className="text-muted-foreground">
                             Organization
@@ -852,7 +842,7 @@ export const ConversationsView = () => {
                         </div>
                       </div>
 
-                      <div className="rounded-[1.3rem] border border-white/60 bg-white/62 p-4 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
+                      <div className="rounded-xl border border-white/60 bg-white/62 p-3 dark:border-white/10 dark:bg-white/6">
                         <div className="flex items-start justify-between gap-3">
                           <span className="text-muted-foreground">Thread</span>
                           <span className="break-all text-right font-medium">
@@ -862,7 +852,7 @@ export const ConversationsView = () => {
                       </div>
 
                       {conversation.contactSession.metadata?.currentUrl ? (
-                        <div className="rounded-[1.3rem] border border-white/60 bg-white/62 p-4 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
+                        <div className="rounded-xl border border-white/60 bg-white/62 p-3 dark:border-white/10 dark:bg-white/6">
                           <div className="flex items-start justify-between gap-3">
                             <span className="text-muted-foreground">
                               Current URL
@@ -875,7 +865,7 @@ export const ConversationsView = () => {
                       ) : null}
 
                       {conversation.contactSession.metadata?.timezone ? (
-                        <div className="rounded-[1.3rem] border border-white/60 bg-white/62 p-4 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
+                        <div className="rounded-xl border border-white/60 bg-white/62 p-3 dark:border-white/10 dark:bg-white/6">
                           <div className="flex items-start justify-between gap-3">
                             <span className="text-muted-foreground">
                               Timezone
@@ -888,7 +878,7 @@ export const ConversationsView = () => {
                       ) : null}
 
                       {conversation.contactSession.metadata?.referrer ? (
-                        <div className="rounded-[1.3rem] border border-white/60 bg-white/62 p-4 shadow-[0_18px_42px_-36px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-white/6">
+                        <div className="rounded-xl border border-white/60 bg-white/62 p-3 dark:border-white/10 dark:bg-white/6">
                           <div className="flex items-start justify-between gap-3">
                             <span className="text-muted-foreground">
                               Referrer

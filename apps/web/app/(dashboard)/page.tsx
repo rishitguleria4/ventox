@@ -5,17 +5,16 @@ import {
   AuthLoading,
   Authenticated,
   Unauthenticated,
-  useMutation,
   useQuery,
 } from "convex/react";
 import {
   ActivityIcon,
   ArrowRightIcon,
   BotIcon,
+  FolderOpenIcon,
   MessageSquareTextIcon,
   PaletteIcon,
   PlugZapIcon,
-  Users2Icon,
   WavesIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -62,15 +61,16 @@ const quickLinks = [
 ] as const;
 
 export default function Page() {
-  const users = useQuery(api.users.getmany);
-  const addUser = useMutation(api.users.add);
+  const recentConversations = useQuery(api.private.conversations.getMany, {
+    paginationOpts: { numItems: 25, cursor: null },
+  });
 
   const metricCards = [
     {
-      label: "Workspace Members",
-      value: String(users?.length ?? 0),
-      detail: "Live Convex demo count",
-      icon: Users2Icon,
+      label: "Recent Conversations",
+      value: String(recentConversations?.page.length ?? 0),
+      detail: "Live organization inbox threads",
+      icon: MessageSquareTextIcon,
     },
     {
       label: "Support Readiness",
@@ -80,8 +80,8 @@ export default function Page() {
     },
     {
       label: "Assistant Posture",
-      value: "Brand-led",
-      detail: "Consistent UI language across flows",
+      value: "RAG-enabled",
+      detail: "Grounded answers with automatic escalation",
       icon: BotIcon,
     },
   ] as const;
@@ -100,7 +100,7 @@ export default function Page() {
                       Support workspace
                     </Badge>
                     <span className="status-pill">
-                      Freshly polished frontend
+                      Production control center
                     </span>
                   </div>
                   <p className="page-eyebrow mt-5">Overview</p>
@@ -108,9 +108,9 @@ export default function Page() {
                     Operate support from a calmer, sharper control center.
                   </h1>
                   <p className="page-subtitle mt-4 max-w-3xl">
-                    Conversations, widget experiences, and launch surfaces now
-                    share the same premium visual system so the product feels
-                    cohesive from the first login to the last reply.
+                    Conversations, widget experiences, and knowledge files
+                    share the same real-time workspace so your team can resolve
+                    customer questions faster.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-3">
                     <Button asChild className="rounded-full px-4" size="lg">
@@ -120,12 +120,15 @@ export default function Page() {
                       </Link>
                     </Button>
                     <Button
+                      asChild
                       className="rounded-full px-4"
-                      onClick={() => addUser()}
                       size="lg"
                       variant="outline"
                     >
-                      Add Demo User
+                      <Link href="/files">
+                        <FolderOpenIcon className="size-4" />
+                        Knowledge Base
+                      </Link>
                     </Button>
                   </div>
                 </div>
@@ -135,7 +138,7 @@ export default function Page() {
                   <div className="space-y-3">
                     {[
                       "Review live customer threads",
-                      "Ship branded widget updates",
+                      "Keep knowledge base documents current",
                       "Connect channels and voice flows",
                     ].map((item) => (
                       <div
@@ -209,17 +212,31 @@ export default function Page() {
 
               <Card className="glass-panel py-0">
                 <CardHeader className="px-5 py-5 md:px-6">
-                  <CardTitle>Live Data Snapshot</CardTitle>
+                  <CardTitle>Queue Snapshot</CardTitle>
                   <CardDescription>
-                    Current Convex user payload from your environment.
+                    Breakdown of recent conversations in your organization.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="px-5 pb-5 md:px-6 md:pb-6">
-                  <div className="rounded-[1.35rem] border border-border/70 bg-background/60 p-4">
-                    <pre className="max-h-[27rem] overflow-auto text-xs leading-6 text-muted-foreground">
-                      {JSON.stringify(users, null, 2)}
-                    </pre>
-                  </div>
+                <CardContent className="space-y-3 px-5 pb-5 md:px-6 md:pb-6">
+                  {(["unresolved", "escalated", "resolved"] as const).map(
+                    (status) => {
+                      const count =
+                        recentConversations?.page.filter(
+                          (c) => c.status === status,
+                        ).length ?? 0;
+                      return (
+                        <div
+                          key={status}
+                          className="flex items-center justify-between rounded-[1.1rem] border border-border/70 bg-background/60 px-4 py-3"
+                        >
+                          <span className="text-sm font-medium capitalize">
+                            {status}
+                          </span>
+                          <Badge variant="secondary">{count}</Badge>
+                        </div>
+                      );
+                    },
+                  )}
                 </CardContent>
               </Card>
             </section>

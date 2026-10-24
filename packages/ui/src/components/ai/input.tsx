@@ -74,7 +74,7 @@ export type AIInputProps = HTMLAttributes<HTMLFormElement>;
 export const AIInput = ({ className, ...props }: AIInputProps) => (
   <form
     className={cn(
-      "w-full divide-y overflow-hidden rounded-[1.6rem] border border-border/70 bg-background/78 shadow-[0_28px_64px_-44px_rgba(15,23,42,0.55)] backdrop-blur-sm",
+      "w-full divide-y overflow-hidden rounded-[1.25rem] border border-border/70 bg-background/78 shadow-[0_20px_48px_-36px_rgba(15,23,42,0.5)] backdrop-blur-sm",
       className,
     )}
     {...props}
@@ -90,8 +90,8 @@ export const AIInputTextarea = ({
   onChange,
   className,
   placeholder = "What would you like to know?",
-  minHeight = 48,
-  maxHeight = 164,
+  minHeight = 40,
+  maxHeight = 120,
   ...props
 }: AIInputTextareaProps) => {
   const { textareaRef, adjustHeight } = useAutoResizeTextarea({
@@ -113,7 +113,7 @@ export const AIInputTextarea = ({
     <Textarea
       className={cn(
         "text-sm!",
-        "w-full resize-none rounded-none border-none px-4 py-4 shadow-none outline-none ring-0",
+        "min-h-10 w-full resize-none rounded-none border-none px-3.5 py-2.5 shadow-none outline-none ring-0",
         "bg-transparent dark:bg-transparent",
         "focus-visible:ring-0",
         className,
@@ -138,7 +138,7 @@ export const AIInputToolbar = ({
   ...props
 }: AIInputToolbarProps) => (
   <div
-    className={cn("flex items-center justify-between px-3 py-2.5", className)}
+    className={cn("flex items-center justify-between px-3 py-1.5", className)}
     {...props}
   />
 );
@@ -207,7 +207,7 @@ export const AIInputSubmit = ({
 
   return (
     <Button
-      className={cn("gap-1.5 rounded-full px-4", className)}
+      className={cn("h-8 gap-1.5 rounded-full px-3.5 text-xs", className)}
       size={size}
       type="submit"
       variant={variant}

@@ -34,7 +34,7 @@ import {
 import { cn } from "@workspace/ui/lib/utils";
 import { useAction, useQuery } from "convex/react";
 import { useAtomValue, useSetAtom } from "jotai";
-import { ArrowLeftIcon, Wand2Icon } from "lucide-react";
+import { ArrowLeftIcon, InboxIcon, Wand2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
@@ -71,9 +71,9 @@ export const WidgetChatScreen = () => {
     api.public.conversations.getOne,
     conversationId && contactSessionId
       ? {
-        conversationId,
-        contactSessionId,
-      }
+          conversationId,
+          contactSessionId,
+        }
       : "skip",
   );
 
@@ -90,9 +90,9 @@ export const WidgetChatScreen = () => {
     api.public.messages.getMany,
     conversation?.threadId && contactSessionId
       ? {
-        threadId: conversation.threadId,
-        contactSessionId,
-      }
+          threadId: conversation.threadId,
+          contactSessionId,
+        }
       : "skip",
     { initialNumItems: 10 },
   );
@@ -176,30 +176,41 @@ export const WidgetChatScreen = () => {
 
   return (
     <>
-      <WidgetHeader>
-        <div className="space-y-4">
+      <WidgetHeader compact>
+        <div className="flex items-center gap-2">
+          <span className="hidden rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 text-[11px] font-medium text-white/90 sm:inline-flex">
+            {conversation?.status === "escalated"
+              ? "Human Support"
+              : conversation?.status === "resolved"
+                ? "Resolved"
+                : "Live Chat"}
+          </span>
           <Button
-            className="rounded-full border border-white/18 bg-white/8"
-            size="icon"
-            onClick={onBack}
+            className="h-7 gap-1.5 rounded-full border border-white/18 bg-white/10 px-2.5 text-xs text-white hover:bg-white/20"
+            onClick={() => setScreen("inbox")}
+            size="sm"
             variant="transparent"
           >
-            <ArrowLeftIcon className="size-4" />
+            <InboxIcon className="size-3.5" />
+            <span className="hidden sm:inline">Inbox</span>
           </Button>
-          <div>
-            <p className="text-3xl font-semibold tracking-tight">Chat</p>
-            <p className="max-w-sm text-sm leading-6 text-white/88">
-              Secure communication channel actively monitored by our support team.
-            </p>
-          </div>
+          <Button
+            className="h-7 gap-1 rounded-full border border-white/18 bg-white/10 px-2.5 text-xs text-white hover:bg-white/20"
+            onClick={onBack}
+            size="sm"
+            variant="transparent"
+          >
+            <ArrowLeftIcon className="size-3.5" />
+            <span>Back</span>
+          </Button>
         </div>
       </WidgetHeader>
 
-      <div className="widget-main gap-4 px-4 py-4 min-h-0 overflow-hidden">
+      <div className="widget-main min-h-0 flex-1 gap-2 overflow-hidden px-3 py-2.5">
         {conversation?.status === "escalated" ? (
-          <div className="widget-soft-card border-amber-500/25 bg-amber-500/10 text-amber-950 dark:text-amber-100 shrink-0">
-            Human support is handling this conversation now. Keep replying here
-            and the company dashboard handler can answer directly.
+          <div className="shrink-0 rounded-xl border border-amber-500/30 bg-amber-500/12 px-3 py-1.5 text-xs leading-5 text-amber-950 dark:text-amber-100">
+            Human support is handling this conversation. Reply below and our
+            team will respond directly.
           </div>
         ) : null}
 
@@ -211,15 +222,15 @@ export const WidgetChatScreen = () => {
                 canLoadMore={canLoadMore}
                 isLoading={isLoading}
                 ref={topElementRef}
-                className="px-4 pt-4"
+                className="px-3 pt-2.5"
                 noMoreText={
                   messages.results.length > 0 ? "Start of conversation" : ""
                 }
               />
-              <div className="flex flex-1 flex-col justify-end gap-2 px-4 pb-4">
+              <div className="flex flex-1 flex-col justify-end gap-2 px-3 pb-3">
                 {messages.results.length === 0 ? (
-                  <div className="flex min-h-40 items-center justify-center rounded-[1.3rem] border border-dashed border-border/70 bg-background/40 px-4 text-center text-sm text-muted-foreground">
-                    Awaiting secure message transmission...
+                  <div className="flex min-h-28 items-center justify-center rounded-xl border border-dashed border-border/70 bg-background/40 px-4 text-center text-sm text-muted-foreground">
+                    Send a message below to start chatting with support.
                   </div>
                 ) : null}
                 {(messages?.results ?? []).map((item) => {
@@ -259,12 +270,12 @@ export const WidgetChatScreen = () => {
                             {assistantLabel}
                           </p>
                         ) : null}
-                        <AIResponse className="leading-7">{text}</AIResponse>
+                        <AIResponse className="leading-6">{text}</AIResponse>
                       </AIMessageContent>
                       {message.role === "assistant" && (
                         <DicebearAvatar
                           seed={item.agentName ?? "assistant"}
-                          size={42}
+                          size={36}
                           badgeImageUrl="/logo.svg"
                         />
                       )}
@@ -280,9 +291,9 @@ export const WidgetChatScreen = () => {
       </div>
 
       <Form {...form}>
-        <div className="border-t border-white/12 bg-white/58 px-4 py-4 backdrop-blur-xl dark:bg-slate-950/50">
+        <div className="shrink-0 border-t border-white/12 bg-white/58 px-3 py-2 backdrop-blur-xl dark:bg-slate-950/50">
           <AIInput
-            className="border-white/60 bg-white/76"
+            className="border-white/60 bg-white/80"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField
@@ -312,11 +323,11 @@ export const WidgetChatScreen = () => {
                     }
                     value={field.value}
                   />
-                  <AIInputToolbar className="gap-3">
-                    <AIInputTools className="gap-2">
+                  <AIInputToolbar className="gap-2">
+                    <AIInputTools className="gap-1.5">
                       <Badge
                         variant="outline"
-                        className="rounded-full border-border/70 px-3 py-1 text-[10px] tracking-[0.18em] uppercase"
+                        className="rounded-full border-border/70 px-2.5 py-0.5 text-[10px] tracking-[0.16em] uppercase"
                       >
                         Support reply
                       </Badge>
@@ -328,7 +339,7 @@ export const WidgetChatScreen = () => {
                           form.formState.isSubmitting ||
                           isEnhancingDraft
                         }
-                        className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-full bg-indigo-500/10 px-3 py-1 text-[11px] font-medium text-indigo-600 transition-all duration-300 hover:bg-indigo-500/20 hover:text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300 dark:hover:bg-indigo-500/25 active:scale-95"
+                        className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-full bg-indigo-500/10 px-2.5 py-0.5 text-[11px] font-medium text-indigo-600 transition-all duration-300 hover:bg-indigo-500/20 hover:text-indigo-700 active:scale-95 dark:bg-indigo-500/15 dark:text-indigo-300 dark:hover:bg-indigo-500/25"
                       >
                         <Wand2Icon className="size-3" />
                         {isEnhancingDraft ? "Enhancing..." : "Enhance"}
@@ -351,7 +362,7 @@ export const WidgetChatScreen = () => {
                     </AIInputSubmit>
                   </AIInputToolbar>
                   {fieldState.error?.message ? (
-                    <p className="px-4 pb-4 text-sm text-destructive">
+                    <p className="px-3.5 pb-2 text-xs text-destructive">
                       {fieldState.error.message}
                     </p>
                   ) : null}

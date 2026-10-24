@@ -8,7 +8,7 @@ import {
 } from "@workspace/ui/components/collapsible";
 import { ChevronDownIcon } from "lucide-react";
 import type { ComponentProps } from "react";
-import { createContext, memo, useContext, useEffect, useState } from "react";
+import { createContext, memo, useContext, useEffect, useRef } from "react";
 import { cn } from "@workspace/ui/lib/utils";
 import { AIResponse } from "@workspace/ui/components/ai/response";
 
@@ -58,34 +58,39 @@ export const AIReasoning = memo(
       defaultProp: 0,
     });
 
-    const [hasAutoClosedRef, setHasAutoClosedRef] = useState(false);
-    const [startTime, setStartTime] = useState<number | null>(null);
+    const hasAutoClosedRef = useRef(false);
+    const startTimeRef = useRef<number | null>(null);
 
     // Track duration when streaming starts and ends
     useEffect(() => {
       if (isStreaming) {
-        if (startTime === null) {
-          setStartTime(Date.now());
+        if (startTimeRef.current === null) {
+          startTimeRef.current = Date.now();
         }
-      } else if (startTime !== null) {
-        setDuration(Math.round((Date.now() - startTime) / 1000));
-        setStartTime(null);
+      } else if (startTimeRef.current !== null) {
+        setDuration(Math.round((Date.now() - startTimeRef.current) / 1000));
+        startTimeRef.current = null;
       }
-    }, [isStreaming, startTime, setDuration]);
+    }, [isStreaming, setDuration]);
 
     // Auto-open when streaming starts, auto-close when streaming ends (once only)
     useEffect(() => {
       if (isStreaming && !isOpen) {
         setIsOpen(true);
-      } else if (!isStreaming && isOpen && !defaultOpen && !hasAutoClosedRef) {
+      } else if (
+        !isStreaming &&
+        isOpen &&
+        !defaultOpen &&
+        !hasAutoClosedRef.current
+      ) {
         // Add a small delay before closing to allow user to see the content
         const timer = setTimeout(() => {
           setIsOpen(false);
-          setHasAutoClosedRef(true);
+          hasAutoClosedRef.current = true;
         }, 1000);
         return () => clearTimeout(timer);
       }
-    }, [isStreaming, isOpen, defaultOpen, setIsOpen, hasAutoClosedRef]);
+    }, [isStreaming, isOpen, defaultOpen, setIsOpen]);
 
     const handleOpenChange = (open: boolean) => {
       setIsOpen(open);

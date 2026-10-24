@@ -1,11 +1,15 @@
+import { stepCountIs } from "ai";
 import { listMessages, saveMessage, syncStreams } from "@convex-dev/agent";
 import { vStreamArgs } from "@convex-dev/agent/validators";
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
 import { action, query } from "../_generated/server";
 import { components, internal } from "../_generated/api";
+import { rateLimiter } from "../lib/rateLimiter";
 import { supportAgent } from "../system/ai/agents/supportAgent";
 import { enhanceSupportDraftText } from "../system/ai/services/enhanceText";
+
+const MAX_PROMPT_CHARS = 4000;
 
 const hasConfiguredAiProvider = () =>
   Boolean(process.env.GOOGLE_GENERATIVE_AI_API_KEY);
@@ -38,6 +42,18 @@ export const create = action({
         message: "Message cannot be empty",
       });
     }
+
+    if (prompt.length > MAX_PROMPT_CHARS) {
+      throw new ConvexError({
+        code: "BAD_REQUEST",
+        message: "Message too long",
+      });
+    }
+
+    await rateLimiter.limit(ctx, "widgetMessage", {
+      key: args.contactSessionId,
+      throws: true,
+    });
 
     const contactSession = await ctx.runQuery(
       internal.system.contactSessions.getOne,
@@ -114,10 +130,11 @@ export const create = action({
     });
 
     // Work around an upstream type mismatch between the installed agent package
-    // and its AI SDK typings; the runtime accepts prompt/messages here.
+    // and its AI SDK typings; the runtime accepts prompt/messages/stopWhen here.
     const result = await thread.generateText(
       {
         prompt,
+        stopWhen: stepCountIs(5),
       } as unknown as Parameters<typeof thread.generateText>[0]
     );
 
@@ -192,6 +209,18 @@ export const enhanceDraft = action({
         message: "Message cannot be empty",
       });
     }
+
+    if (draft.length > MAX_PROMPT_CHARS) {
+      throw new ConvexError({
+        code: "BAD_REQUEST",
+        message: "Message too long",
+      });
+    }
+
+    await rateLimiter.limit(ctx, "widgetMessage", {
+      key: args.contactSessionId,
+      throws: true,
+    });
 
     const contactSession = await ctx.runQuery(
       internal.system.contactSessions.getOne,

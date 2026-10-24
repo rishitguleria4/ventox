@@ -90,21 +90,21 @@ export const WidgetAuthScreen = () => {
   return (
     <>
       <WidgetHeader>
-        <div className="space-y-3">
-          <p className="text-3xl font-semibold tracking-tight">
+        <div className="space-y-1">
+          <p className="text-xl font-semibold tracking-tight">
             Identity Verification
           </p>
-          <p className="max-w-sm text-sm leading-6 text-white/88">
-            Please authenticate your session to ensure persistent access to your
-            support history and secure communications.
+          <p className="max-w-sm text-xs leading-5 text-white/85">
+            Authenticate your session for persistent access to your support
+            history.
           </p>
         </div>
       </WidgetHeader>
 
-      <div className="widget-main gap-4 px-4 py-4 min-h-0 overflow-y-auto">
+      <div className="widget-main min-h-0 gap-3 overflow-y-auto px-4 py-3.5">
         <div className="widget-card">
           <Form {...form}>
-            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+            <form className="space-y-3" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="name"
@@ -112,9 +112,9 @@ export const WidgetAuthScreen = () => {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <UserRoundIcon className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <UserRoundIcon className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
-                          className="h-12 rounded-[1.15rem] border-border/70 bg-background/70 pl-11"
+                          className="h-11 rounded-[1rem] border-border/70 bg-background/70 pl-11"
                           placeholder="Your name"
                           type="text"
                           {...field}
@@ -133,9 +133,9 @@ export const WidgetAuthScreen = () => {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <MailIcon className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <MailIcon className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
-                          className="h-12 rounded-[1.15rem] border-border/70 bg-background/70 pl-11"
+                          className="h-11 rounded-[1rem] border-border/70 bg-background/70 pl-11"
                           placeholder="Your email"
                           type="email"
                           {...field}
@@ -148,7 +148,7 @@ export const WidgetAuthScreen = () => {
               />
 
               <Button
-                className="h-12 w-full rounded-[1.15rem]"
+                className="h-11 w-full rounded-[1rem]"
                 disabled={form.formState.isSubmitting}
                 size="lg"
                 type="submit"
@@ -159,11 +159,11 @@ export const WidgetAuthScreen = () => {
           </Form>
         </div>
 
-        <div className="widget-soft-card flex items-start gap-3">
+        <div className="widget-soft-card flex items-start gap-3 py-3">
           <SparklesIcon className="mt-0.5 size-4 text-primary" />
-          <p className="text-sm leading-6 text-foreground/82">
-            This protocol ensures your support history remains securely attached
-            to your organizational profile and isolated from unauthorized access.
+          <p className="text-xs leading-5 text-foreground/82">
+            Your support history remains securely attached to your profile and
+            isolated from unauthorized access.
           </p>
         </div>
       </div>

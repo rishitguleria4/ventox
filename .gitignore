@@ -41,3 +41,6 @@ npm-debug.log*
 #sentry
 apps/web/.env.sentry-build-plugin.env*
 .env*
+!.env.example
+!.env.example
+

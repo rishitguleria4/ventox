@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Loader2Icon } from "lucide-react";
 import { api } from "@workspace/backend/convex/_generated/api";
 import type { PublicFile } from "@workspace/backend/convex/private/files";
-import { Id } from "@workspace/backend/convex/_generated/dataModel";
 
 interface DeleteFileDialogProps {
     open: boolean;
@@ -41,7 +40,7 @@ export const DeleteFileDialog = ({
     }
 
     return (
-        < Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className={"sm:max-w-[425px]"}>
                 <DialogHeader className="space-y-4">
                     <DialogTitle className="text-xl font-bold text-red-500">Delete File</DialogTitle>
@@ -57,8 +56,8 @@ export const DeleteFileDialog = ({
                     </Button>
                     <Button
                         variant="destructive"
-                        onClick={handleDelete || !file}
-                        disabled={isDeleting}
+                        onClick={handleDelete}
+                        disabled={isDeleting || !file}
                     >
                         {isDeleting ? <Loader2Icon className="animate-spin" /> : "Delete"}
                     </Button>
@@ -66,4 +65,4 @@ export const DeleteFileDialog = ({
             </DialogContent>
         </Dialog>
     )
-} 
+}

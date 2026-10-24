@@ -3,9 +3,12 @@ import { action, mutation, query, QueryCtx } from "../_generated/server";
 import { ConvexError } from "convex/values";
 import { contentHashFromArrayBuffer, guessMimeTypeFromContents, guessMimeTypeFromExtension, Entry, EntryId } from "@convex-dev/rag";
 import { extractTextContent } from "../lib/extractTextContent";
+import { rateLimiter } from "../lib/rateLimiter";
 import rag from "../system/ai/rag";
 import { Id } from "../_generated/dataModel";
 import { paginationOptsValidator } from "convex/server";
+
+const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 /**
  * Guesses the MIME type of a file based on its extension or contents.
@@ -119,6 +122,16 @@ export const addFile = action({
             });
         }
         const { filename, category, bytes } = args;
+        if (bytes.byteLength > MAX_FILE_BYTES) {
+            throw new ConvexError({
+                code: "BAD_REQUEST",
+                message: "File exceeds 10 MB",
+            });
+        }
+        await rateLimiter.limit(ctx, "fileUpload", {
+            key: orgId,
+            throws: true,
+        });
         const mimetype = args.mimetype || guessMimeType(filename, bytes);
         const blob = new Blob([bytes], { type: mimetype });
 

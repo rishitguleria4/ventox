@@ -1,4 +1,4 @@
-import { atomFamily , atomWithStorage } from "jotai/utils";
+import { atomFamily, atomWithStorage } from "jotai/utils";
 import { atom } from "jotai";
 import { WidgetScreen } from "../types";
 import { CONTACT_SESSION_KEY } from "../constants";
@@ -6,13 +6,20 @@ import { Id } from "@workspace/backend/convex/_generated/dataModel";
 
 // BASIC WIDGET STATE ATOMS
 export const screenAtom = atom<WidgetScreen>("loading");
-export const organizationIdAtom = atom < string | null > (null);
+export const organizationIdAtom = atom<string | null>(null);
 
-//  organization scoped contact session atom
-export const contactSessionIdAtomFamily = atomFamily((organizationId : string) => {
-    return atomWithStorage<Id<"contactSessions"> | null>(`${CONTACT_SESSION_KEY}_${organizationId}` , null);
-});
+// Organization-scoped contact session atom (reads synchronously from localStorage on init)
+export const contactSessionIdAtomFamily = atomFamily(
+  (organizationId: string) => {
+    return atomWithStorage<Id<"contactSessions"> | null>(
+      `${CONTACT_SESSION_KEY}_${organizationId}`,
+      null,
+      undefined,
+      { getOnInit: true },
+    );
+  },
+);
 
-export const errorMessageAtom = atom< string | null>(null);
-export const loadingMessageAtom = atom< string | null > (null);
-export const conversationIdAtom =atom < Id<"conversations"> | null > (null);
+export const errorMessageAtom = atom<string | null>(null);
+export const loadingMessageAtom = atom<string | null>(null);
+export const conversationIdAtom = atom<Id<"conversations"> | null>(null);

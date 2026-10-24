@@ -9,13 +9,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@workspace/ui/components/dialog";
-import {
-    CloudUploadIcon,
-    FileUpIcon,
-    Loader2Icon,
-} from "lucide-react";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
 import {
@@ -29,7 +23,6 @@ interface UploadDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onFileUploaded?: () => void;
-
 }
 
 export const UploadDialog = ({
@@ -99,7 +92,7 @@ export const UploadDialog = ({
     }
 
     return (
-        < Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Upload File</DialogTitle>
@@ -126,7 +119,7 @@ export const UploadDialog = ({
                             id="filename"
                             placeholder="Update Filename"
                             value={uploadForm.filename}
-                            onChange={(e) => setUploadForm((prev) => ({ ...prev, category: e.target.value }))}
+                            onChange={(e) => setUploadForm((prev) => ({ ...prev, filename: e.target.value }))}
                         />
                     </div>
                     <Dropzone
@@ -149,13 +142,14 @@ export const UploadDialog = ({
                 <DialogFooter>
                     <Button
                         disabled={isUploading}
-                        onClick={() => {handleCancel}}
+                        onClick={handleCancel}
+                        variant="outline"
                     >
                         Cancel
                     </Button>
                     <Button
                         disabled={isUploading}
-                        onClick={async () => {handleUpload()}}
+                        onClick={() => void handleUpload()}
                     >
                         {isUploading ? "Uploading.." : "Upload"}
                     </Button>

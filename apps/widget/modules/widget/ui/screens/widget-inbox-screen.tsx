@@ -4,7 +4,7 @@ import { extractText } from "@convex-dev/agent";
 import { usePaginatedQuery } from "convex/react";
 import { formatDistanceToNow } from "date-fns";
 import { useAtomValue, useSetAtom } from "jotai";
-import { ArrowLeftCircleIcon, ArrowRightIcon } from "lucide-react";
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 
 import { api } from "@workspace/backend/convex/_generated/api";
 import { Button } from "@workspace/ui/components/button";
@@ -52,26 +52,27 @@ export const WidgetInboxScreen = () => {
   return (
     <>
       <WidgetHeader>
-        <div className="space-y-4">
-          <Button
-            variant="transparent"
-            size="icon"
-            onClick={() => setScreen("selection")}
-            className="rounded-full border border-white/18 bg-white/8"
-          >
-            <ArrowLeftCircleIcon className="size-6" />
-          </Button>
+        <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-3xl font-semibold tracking-tight">Inbox</p>
-            <p className="max-w-sm text-sm leading-6 text-white/88">
-              Access your active and historical support threads securely.
+            <p className="text-xl font-semibold tracking-tight">Inbox</p>
+            <p className="text-xs leading-5 text-white/85">
+              Access your active and historical support threads.
             </p>
           </div>
+          <Button
+            variant="transparent"
+            size="sm"
+            onClick={() => setScreen("selection")}
+            className="h-8 gap-1.5 rounded-full border border-white/18 bg-white/10 px-3 text-xs text-white hover:bg-white/20"
+          >
+            <ArrowLeftIcon className="size-3.5" />
+            Back
+          </Button>
         </div>
       </WidgetHeader>
-      <div className="widget-main gap-3 overflow-y-auto px-4 py-4">
+      <div className="widget-main gap-2.5 overflow-y-auto px-3 py-3">
         {conversations.results.length === 0 ? (
-          <div className="widget-card flex min-h-40 items-center justify-center text-center text-sm leading-6 text-muted-foreground">
+          <div className="widget-card flex min-h-36 items-center justify-center text-center text-sm leading-6 text-muted-foreground">
             No conversations yet. Start a new chat to create your first thread.
           </div>
         ) : null}
@@ -85,13 +86,13 @@ export const WidgetInboxScreen = () => {
               setConversationId(conversation._id);
             }}
           >
-            <div className="flex w-full flex-col gap-3 p-4">
+            <div className="flex w-full flex-col gap-2 p-3.5">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground uppercase">
                     Chat
                   </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <p className="mt-0.5 text-xs text-muted-foreground">
                     {formatDistanceToNow(new Date(conversation._creationTime), {
                       addSuffix: true,
                     })}
@@ -100,13 +101,13 @@ export const WidgetInboxScreen = () => {
                 <ConversationStatusIcon status={conversation.status} />
               </div>
               <div className="flex items-start justify-between gap-3">
-                <p className="line-clamp-2 text-sm leading-6 text-foreground/88">
+                <p className="line-clamp-2 text-sm leading-5 text-foreground/88">
                   {conversation.lastMessage?.message
                     ? (extractText(conversation.lastMessage.message) ??
                       "Message unavailable")
                     : "No messages yet"}
                 </p>
-                <ArrowRightIcon className="mt-1 size-4 shrink-0 text-muted-foreground" />
+                <ArrowRightIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
               </div>
             </div>
           </Button>
